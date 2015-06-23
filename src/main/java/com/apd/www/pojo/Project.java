@@ -149,6 +149,8 @@ public class Project {
 
     private String projectstatus;
 
+    private boolean ispushtojinpingmei;
+
     public Integer getFinancingmaturityday() {
         return financingmaturityday;
     }
@@ -488,6 +490,14 @@ public class Project {
     public int getId() {
 
         return id;
+    }
+
+    public boolean isIspushtojinpingmei() {
+        return ispushtojinpingmei;
+    }
+
+    public void setIspushtojinpingmei(boolean ispushtojinpingmei) {
+        this.ispushtojinpingmei = ispushtojinpingmei;
     }
 
     public void setId(int id) {

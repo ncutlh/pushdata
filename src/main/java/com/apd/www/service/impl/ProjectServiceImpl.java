@@ -60,4 +60,14 @@ public class ProjectServiceImpl implements ProjectService {
         list.add(query1.getSingleResult());
         return list;
     }
+
+
+    @Override
+    public List<Project> getJpmOpenProjectList() throws ParseException{
+        TypedQuery query = em.createQuery("select c from Project c where c.ispushtojinpingmei=1 and  c.projectstatus ='OPENED'", Project.class);
+        return query.getResultList();
+    }
+
+
+
 }

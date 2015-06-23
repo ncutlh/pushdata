@@ -1,7 +1,9 @@
 package com.apd.www.web;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.apd.www.pojo.Investment;
+import com.apd.www.pojo.JinPingMeiParams;
 import com.apd.www.pojo.Project;
 import com.apd.www.pojo.ResponsePojo;
 import com.apd.www.service.InvestService;
@@ -15,6 +17,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -384,7 +387,55 @@ public class ProjectController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(value = "/getJPMProjectList")
+    public String getJPMProjectList() throws ParseException {
+
+        List<JinPingMeiParams> jinpinmeiList = new ArrayList<JinPingMeiParams>();
+
+        List<Project> scaiProjects = projectService.getJpmOpenProjectList();
+
+        for(Project project:scaiProjects){
+            JinPingMeiParams jinPingMeiParams = new JinPingMeiParams();
+            jinPingMeiParams.setName(project.getProjectname());
+            jinPingMeiParams.setRate(String.valueOf(project.getInterestrate()));
+            jinPingMeiParams.setSpeed(String.valueOf(project.getInvestmentedamount().divide(project.getAmount()).multiply(new BigDecimal(100))));
+            if(BigDecimal.ONE.compareTo(project.getFinancingmaturity()) > 0){
+                jinPingMeiParams.setSum_scale(String.valueOf(project.getFinancingmaturityday()));
+                jinPingMeiParams.setDate_type("1");
+            } else {
+                jinPingMeiParams.setSum_scale(String.valueOf(project.getFinancingmaturity()));
+                jinPingMeiParams.setDate_type("2");
+            }
+            jinPingMeiParams.setSurplus(String.valueOf(project.getAmount().subtract(project.getInterestamount())));
+            jinPingMeiParams.setPattern(project.getRepaymentcalctype());
+            jinPingMeiParams.setCps_from("阿朋贷");
+            jinPingMeiParams.setCps_proid(String.valueOf(project.getId()));
+            jinPingMeiParams.setPro_url(String.valueOf("www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));
+            jinPingMeiParams.setM_pro_url(String.valueOf("api.apengdai.com"+ "/api/v2/project/info/" + project.getId()));
+
+            jinpinmeiList.add(jinPingMeiParams);
+        }
+        return JSON.toJSONString(jinpinmeiList);
+    }
+
+    @RequestMapping(value = "/getProjectStatus/{projectId}")
+    @ResponseBody
+    private String getProjectStatus(@PathVariable("projectId") Integer projectId){
+
+        Project project = projectService.findById(projectId);
+        if( project.isIspushtojinpingmei()){
+            Map<String,Integer> statusMap=new HashMap<String,Integer>();
+            if(project.getProjectstatus().equals("OPENED"))
+                statusMap.put("status",1);
+            else
+                statusMap.put("status",2);
+            return JSON.toJSONString(statusMap) ;
+        }else{
+            return null;
+        }
 
 
+    }
 
 }

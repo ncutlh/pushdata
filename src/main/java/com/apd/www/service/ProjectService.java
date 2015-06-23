@@ -14,4 +14,6 @@ public interface ProjectService {
     List getProjectList(String date, String page, String pageSize) throws ParseException;
 
     List getProjectListInfo(String date) throws ParseException;
+
+    public List<Project> getJpmOpenProjectList() throws ParseException;
 }
