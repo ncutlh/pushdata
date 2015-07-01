@@ -406,14 +406,21 @@ public class ProjectController {
             else
                 jinPingMeiParams.setSpeed("0");
             if(BigDecimal.ONE.compareTo(project.getFinancingmaturity()) > 0){
-                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturityday()));
+                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturityday().intValue()));
                 jinPingMeiParams.setDate_type("1");
             } else {
-                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturity()));
+                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturity().intValue()));
                 jinPingMeiParams.setDate_type("2");
             }
-            jinPingMeiParams.setSurplus(String.valueOf(project.getAmount().subtract(project.getInterestamount())));
-            jinPingMeiParams.setPattern(project.getRepaymentcalctype());
+            jinPingMeiParams.setSurplus(String.valueOf(project.getAmount().subtract(project.getInvestmentedamount())));
+          if(project.getRepaymentcalctype().equals("OneInterestOnePrincipal"))
+              jinPingMeiParams.setPattern("一次性还本付息");
+          else if("MonthlyInterestOnePrincipal".equals(project.getRepaymentcalctype()))
+              jinPingMeiParams.setPattern("每月付息，到期还本");
+          else if("EqualPrincipalAndInterest".equals(project.getRepaymentcalctype()))
+              jinPingMeiParams.setPattern("等额本息");
+
+
             jinPingMeiParams.setCps_from("阿朋贷");
             jinPingMeiParams.setCps_proid(String.valueOf(project.getId()));
             jinPingMeiParams.setPro_url(String.valueOf("http://www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));
