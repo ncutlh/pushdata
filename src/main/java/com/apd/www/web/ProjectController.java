@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -398,7 +399,7 @@ public class ProjectController {
         for(Project project:scaiProjects){
             JinPingMeiParams jinPingMeiParams = new JinPingMeiParams();
             jinPingMeiParams.setName(project.getProjectname());
-            jinPingMeiParams.setRate(String.valueOf(project.getInterestrate()));
+            jinPingMeiParams.setRate(String.valueOf(project.getInterestrate().setScale(2, RoundingMode.DOWN)));
             jinPingMeiParams.setSum_scale(String.valueOf(project.getAmount()));
 
             if(project.getInvestmentedamount().compareTo(BigDecimal.ZERO)!=0)
@@ -424,7 +425,7 @@ public class ProjectController {
             jinPingMeiParams.setCps_from("阿朋贷");
             jinPingMeiParams.setCps_proid(String.valueOf(project.getId()));
             jinPingMeiParams.setPro_url(String.valueOf("http://www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));
-            jinPingMeiParams.setM_pro_url(String.valueOf("http://api.apengdai.com"+ "/api/v2/project/info/" + project.getId()));
+            jinPingMeiParams.setM_pro_url(String.valueOf("http://api.apengdai.com" + "/api/v2/project/info/" + project.getId()));
             jinPingMeiParams.setEnsure("抵押");
             jinpinmeiList.add(jinPingMeiParams);
         }
