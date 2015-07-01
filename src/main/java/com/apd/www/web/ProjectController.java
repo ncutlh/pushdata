@@ -399,21 +399,26 @@ public class ProjectController {
             JinPingMeiParams jinPingMeiParams = new JinPingMeiParams();
             jinPingMeiParams.setName(project.getProjectname());
             jinPingMeiParams.setRate(String.valueOf(project.getInterestrate()));
-            jinPingMeiParams.setSpeed(String.valueOf(project.getInvestmentedamount().divide(project.getAmount()).multiply(new BigDecimal(100))));
+            jinPingMeiParams.setSum_scale(String.valueOf(project.getAmount()));
+
+            if(project.getInvestmentedamount().compareTo(BigDecimal.ZERO)!=0)
+                jinPingMeiParams.setSpeed(String.valueOf(project.getInvestmentedamount().multiply(new BigDecimal(100)).divide(project.getAmount(), 2, BigDecimal.ROUND_DOWN)));
+            else
+                jinPingMeiParams.setSpeed("0");
             if(BigDecimal.ONE.compareTo(project.getFinancingmaturity()) > 0){
-                jinPingMeiParams.setSum_scale(String.valueOf(project.getFinancingmaturityday()));
+                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturityday()));
                 jinPingMeiParams.setDate_type("1");
             } else {
-                jinPingMeiParams.setSum_scale(String.valueOf(project.getFinancingmaturity()));
+                jinPingMeiParams.setDay(String.valueOf(project.getFinancingmaturity()));
                 jinPingMeiParams.setDate_type("2");
             }
             jinPingMeiParams.setSurplus(String.valueOf(project.getAmount().subtract(project.getInterestamount())));
             jinPingMeiParams.setPattern(project.getRepaymentcalctype());
             jinPingMeiParams.setCps_from("阿朋贷");
             jinPingMeiParams.setCps_proid(String.valueOf(project.getId()));
-            jinPingMeiParams.setPro_url(String.valueOf("www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));
-            jinPingMeiParams.setM_pro_url(String.valueOf("api.apengdai.com"+ "/api/v2/project/info/" + project.getId()));
-
+            jinPingMeiParams.setPro_url(String.valueOf("http://www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));
+            jinPingMeiParams.setM_pro_url(String.valueOf("http://api.apengdai.com"+ "/api/v2/project/info/" + project.getId()));
+            jinPingMeiParams.setEnsure("抵押");
             jinpinmeiList.add(jinPingMeiParams);
         }
         return JSON.toJSONString(jinpinmeiList);
