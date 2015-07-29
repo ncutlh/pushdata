@@ -392,10 +392,13 @@ public class ProjectController {
     @RequestMapping(value = "/getJPMProjectList")
     public String getJPMProjectList() throws ParseException {
 
+
         List<JinPingMeiParams> jinpinmeiList = new ArrayList<JinPingMeiParams>();
 
         List<Project> scaiProjects = projectService.getJpmOpenProjectList();
-
+       if(scaiProjects==null || scaiProjects.size()<=0){
+           return "{}";
+       }
         for(Project project:scaiProjects){
             JinPingMeiParams jinPingMeiParams = new JinPingMeiParams();
             jinPingMeiParams.setName(project.getProjectname());

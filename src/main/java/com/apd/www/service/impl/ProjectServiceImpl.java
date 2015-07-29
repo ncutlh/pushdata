@@ -64,10 +64,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getJpmOpenProjectList() throws ParseException{
-        TypedQuery query = em.createQuery("select c from Project c where c.ispushtojinpingmei=1 and  c.projectstatus ='OPENED'", Project.class);
+//        TypedQuery query = em.createQuery("select c from Project c where c.ispushtojinpingmei=1 and  c.projectstatus ='OPENED'", Project.class);
+        TypedQuery query = em.createQuery("select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=5", Project.class);
         return query.getResultList();
     }
-
 
 
 }
