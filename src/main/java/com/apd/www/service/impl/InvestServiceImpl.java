@@ -28,4 +28,13 @@ public class InvestServiceImpl  implements InvestService{
         return query.getResultList();
 
     }
+
+    @Override
+    public List<Investment> getInvestListByUid(int id) {
+
+        TypedQuery query = em.createQuery("select c from Investment c where investoruserid= "+id+" and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ORDER BY id", Investment.class);
+
+        return query.getResultList();
+
+    }
 }

@@ -15,12 +15,12 @@ public class ProjectChannel {
     @Column(name = "PushId")
     private Integer pushid;
 
-    @Column(name = "ProjectID")
+    @Column(name = "projectID")
     private Integer projectid;
-    @Column(name = "ChannelId")
+    @Column(name = "channelId")
     private Integer channelid;
     private Date createAt;
-    @Column(name = "IsPushed")
+    @Column(name = "isPushed")
     private boolean ispushed;
     private Date updateAt;
 

@@ -28,13 +28,10 @@ import java.util.*;
 @Controller
 public class ZhongNiuController {
 
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ProjectService projectService;
 
-    private static Log logger = LogFactory.getLog(ProjectController.class);
 
     @ResponseBody
     @RequestMapping(value = "/zhongniu/getProjectList")

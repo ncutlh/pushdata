@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by laintime on 15/4/22.
@@ -13,8 +14,12 @@ public class User implements Serializable {
     @Id
     @Column(name = "userid")
     private Integer id;
+
     @Column(name ="username")
     private String userName;
+
+    @Column(name ="registerat")
+    private Date registerat;
 
     protected User()
     {
@@ -35,5 +40,13 @@ public class User implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Date getRegisterat() {
+        return registerat;
+    }
+
+    public void setRegisterat(Date registerat) {
+        this.registerat = registerat;
     }
 }
