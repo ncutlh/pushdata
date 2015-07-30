@@ -28,6 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @PersistenceContext
     private EntityManager em;
+
     @Override
     public Project findById(int id) {
         return projectRepository.findOne(id);
@@ -35,7 +36,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getProjectList(String date, String page, String pageSize) throws ParseException {
-
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         TypedQuery query = em.createQuery("select c from Project c where c.dealdate between ?1 and ?2 and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')", Project.class);
         query.setParameter(1,sdf.parse(date+" 00:00:00"));
@@ -62,12 +62,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
+
     @Override
     public List<Project> getJpmOpenProjectList() throws ParseException{
 //        TypedQuery query = em.createQuery("select c from Project c where c.ispushtojinpingmei=1 and  c.projectstatus ='OPENED'", Project.class);
         TypedQuery query = em.createQuery("select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=5", Project.class);
         return query.getResultList();
     }
+
+
+    @Override
+    public List<Project> getZhongniuProjectList() throws ParseException {
+        TypedQuery query = em.createQuery("select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=6", Project.class);
+        return query.getResultList();
+    }
+
 
 
 }

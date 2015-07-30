@@ -98,7 +98,7 @@ public class Project {
 
     private Integer guaranteecompanyid;
 
-
+    private  BigDecimal minbidamount = BigDecimal.ZERO;
 
     /**
      * 融资方ID
@@ -147,6 +147,23 @@ public class Project {
     private Date lastrepaymentdate;
 
 
+    /**
+     * SCHEDULED("已安排"),
+
+     OPENED("开放投标"),
+
+     //FAILED("流标"),
+
+     FINISHED("已满标"),
+
+     SETTLED("已结算"),
+
+     CLEARED("已还清"),
+
+     ARCHIVED("已存档"),
+
+     CANCELED("已取消"),
+     */
     private String projectstatus;
 
     private boolean ispushtojinpingmei;
@@ -510,6 +527,14 @@ public class Project {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public BigDecimal getMinbidamount() {
+        return minbidamount;
+    }
+
+    public void setMinbidamount(BigDecimal minbidamount) {
+        this.minbidamount = minbidamount;
     }
 
     /**
