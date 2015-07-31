@@ -9,5 +9,7 @@ import java.util.List;
  */
 public interface InvestService {
     List getInvestList(int id);
-    List<Investment> getInvestListByUid(int id);
+
+
+    List<Investment> getLastMonthInvestList(String channel);
 }

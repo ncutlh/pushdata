@@ -12,7 +12,7 @@ import java.util.Date;
 public class Investment {
     @Id
     @Column(name = "investmentid")
-    private int id;
+    private int investmentid;
 
     private int investoruserid;
 
@@ -45,12 +45,12 @@ public class Investment {
 
     }
 
-    public int getId() {
-        return id;
+    public int getInvestmentid() {
+        return investmentid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setInvestmentid(int investmentid) {
+        this.investmentid = investmentid;
     }
 
     public int getInvestoruserid() {

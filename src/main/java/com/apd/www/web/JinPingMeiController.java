@@ -102,40 +102,41 @@ public class JinPingMeiController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/jpm/getUser/{uid}")
-    public String getUser(@PathVariable("uid") Integer uid) throws ParseException {
+    @RequestMapping(value = "/jpm/getUser")
+    public String getUser() throws ParseException {
         Map<String,Object> reMap=new HashMap<String,Object>();
-        UserMarket userMarket =userSerivce.getUserMarket(uid);
-        if(userMarket!=null){
-           User user = userSerivce.findById(userMarket.getUserid());
-            reMap.put("cps_from","阿朋贷");
-            reMap.put("uid",uid);//JPM用户uid	暂时默认为0
-            reMap.put("user_name",user.getUserName());//注册用户名
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            reMap.put("reg_time",sdf.format(user.getRegisterat()));//注册时间	例如：2015-07-13 15:12:00
-
+        List<UserMarket> userMarketList =userSerivce.getUserMarket("jpm");
+        if(userMarketList!=null && userMarketList.size()>0 ){
+            for(UserMarket userMarket:userMarketList) {
+                User user = userSerivce.findById(userMarket.getUserid());
+                reMap.put("cps_from", "阿朋贷");
+                reMap.put("uid", userMarket.getExt1());//JPM用户uid	暂时默认为0
+                reMap.put("user_name", user.getUserName());//注册用户名
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                reMap.put("reg_time", sdf.format(user.getRegisterat()));//注册时间	例如：2015-07-13 15:12:00
+            }
         }
         return JSON.toJSONString(reMap) ;
     }
 
 
     @ResponseBody
-    @RequestMapping(value = "/jpm/getInvest/{uid}")
-    public String getInvest(@PathVariable("uid")  Integer uid) throws ParseException {
+    @RequestMapping(value = "/jpm/getInvest")
+    public String getInvest() throws ParseException {
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
-        UserMarket userMarket =userSerivce.getUserMarket(uid);
-        if(userMarket!=null){
-            User user = userSerivce.findById(userMarket.getUserid());
-            List<Investment> invList = investService.getInvestListByUid(userMarket.getUserid());
+        List<Investment> invList = investService.getLastMonthInvestList("jpm");
             if(invList!=null && invList.size()>0){
-
                 for(int i=0;i<invList.size();i++){
                     Map<String,Object> reMap=new HashMap<String,Object>();
                     Investment inv=invList.get(i);
+
+                    UserMarket userMarket =userSerivce.getUserMarketByUid(inv.getInvestoruserid());
+                    User user = userSerivce.findById(userMarket.getUserid());
                     Project project = projectService.findById(inv.getProjectid());
+
                     reMap.put("cps_from","阿朋贷");
                     reMap.put("pro_name",project.getProjectname());//产品名称
-                    reMap.put("uid",uid);//	JPM用户uid
+                    reMap.put("uid",userMarket.getExt1());//	JPM用户uid
                     reMap.put("user_name",user.getUserName());//用户注册名
                     reMap.put("pro_url",String.valueOf("http://www.apengdai.com" + "/project/info/" + project.getId() + "?from=jpm"));//投资的产品标的地址
                     reMap.put("u_amount",inv.getAmount());//用户投资金额
@@ -145,7 +146,7 @@ public class JinPingMeiController {
                     mapList.add(reMap);
                 }
             }
-        }
+
         return JSON.toJSONString(mapList) ;
 
 
