@@ -41,6 +41,7 @@ public class ZhongNiuController {
         List<Project> scaiProjects = projectService.getZhongniuProjectList();
         if(scaiProjects==null || scaiProjects.size()<=0){
             map.put("status",1);
+            map.put("msg","");
             return JSON.toJSONString(map);
         }
         List<Map> list = new ArrayList<Map>();
@@ -63,6 +64,8 @@ public class ZhongNiuController {
             }
             list.add(listObject);
         }
+        map.put("status",0);
+        map.put("msg","");
         map.put("list",list);
         return JSON.toJSONString(map);
     }
