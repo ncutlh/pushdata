@@ -283,13 +283,6 @@ public class Project {
         this.interestratedes = interestratedes;
     }
 
-    public Integer getFinancingmaturityDay() {
-        return financingmaturityday;
-    }
-
-    public void setFinancingmaturityDay(Integer financingmaturityDay) {
-        this.financingmaturityday = financingmaturityDay;
-    }
 
     public BigDecimal getFinancingmaturity() {
         return financingmaturity;

@@ -36,8 +36,9 @@ public class WangDaiTianYanController {
     @Autowired
     private UserSerivce userSerivce;
 
-    static String userName = "wangdaitianyan";
-    static String password = "735709";
+    static String localUserName = "wangdaitianyan";
+    static String localPassword = "735709";
+    static String token_key = "sfdsgdskgdksjgdh";
     static Date timestmp;
     static String token = "";
 
@@ -45,8 +46,9 @@ public class WangDaiTianYanController {
     //校验AuthToken
     public boolean checkAuthToken(String authToken) throws Exception {
         Boolean isValid = false;
-        if (authToken.trim().equals(token())
-                && timestmp.getTime() - (new Date()).getTime() < 10000)
+        String content = localUserName + localPassword + token_key;
+        token = DigestUtils.md5Hex(content.getBytes("utf-8"));
+        if (authToken.trim().equals(token) && timestmp.getTime() - (new Date()).getTime() < 10000)
             isValid = true;
         return isValid;
     }
@@ -54,11 +56,13 @@ public class WangDaiTianYanController {
     //Token 请求
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/token")
-    private static String token() throws Exception {
-        String content = userName + password + "sfdsgdskgdksjgdh";
-        token = DigestUtils.md5Hex(content.getBytes("utf-8"));
-        timestmp = new Date();
-        return token;
+    private static String token(@RequestParam("userName") String userName,@RequestParam("password") String password) throws Exception {
+       if(userName.equals(localUserName) && password.equals(localPassword)) {
+           String content = userName + password + token_key;
+           token = DigestUtils.md5Hex(content.getBytes("utf-8"));
+           timestmp = new Date();
+       }
+           return token;
     }
 
     //借款列表数据；
@@ -127,11 +131,11 @@ public class WangDaiTianYanController {
                 wDTYProjectParams.setRate(project.getInterestrate());
 
                 if (BigDecimal.ONE.compareTo(project.getFinancingmaturity()) > 0) {
-                    wDTYProjectParams.setP_type(1);//"1"，期限类型0代表天，1代表月(不为空)
-                    wDTYProjectParams.setPeriod(project.getFinancingmaturityday().intValue());
-                } else {
                     wDTYProjectParams.setP_type(0);//"1"，期限类型0代表天，1代表月(不为空)
                     wDTYProjectParams.setPeriod(project.getFinancingmaturityday().intValue());
+                } else {
+                    wDTYProjectParams.setP_type(1);//"1"，期限类型0代表天，1代表月(不为空)
+                    wDTYProjectParams.setPeriod(project.getFinancingmaturity().intValue());
                 }
                 // 0 代表其他；1 按月等额本息还款,；2按月付息,到期还本, 3 按天计息，一次性还本付息；4，按月计息，一次性还本付息；5 按季分期还款，6 为等额本金，按月还本金附录有更详细解释）
                 if (project.getRepaymentcalctype().equals("OneInterestOnePrincipal"))

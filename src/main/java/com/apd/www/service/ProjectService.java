@@ -20,7 +20,13 @@ public interface ProjectService {
 
     public List<Project> getZhongniuProjectList() throws ParseException;
 
+
     public List<Project> getWDTYProjectList(Integer status,String time_from,String time_to,Integer page_size,Integer page_index) throws ParseException;
 
     public  Integer getWDTYProjectListCount(Integer status,String time_from,String time_to) throws ParseException;
+
+
+    public List<Project> getYong360ProjectList(Integer page_size,Integer page_index) throws ParseException;
+
+    public Integer getYong360ProjectListCount();
 }

@@ -101,7 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Integer getWDTYProjectListCount(Integer status, String time_from, String time_to) throws ParseException {
-        String sql="select c from Project c , ProjectChannel p " +
+        String sql="select count(1) from Project c , ProjectChannel p " +
                 " where c.id = p.projectid and ispushed=0 and channelid=7";
         if(status==0){
             sql += " and c.createAt between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED')";
@@ -110,9 +110,30 @@ public class ProjectServiceImpl implements ProjectService {
         }else{
             sql += " and c.createat between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED','FINISHED','SETTLED','CLEARED','ARCHIVED')";
         }
-        TypedQuery query = em.createQuery(sql, Project.class);
+        TypedQuery query = em.createQuery(sql,Long.class);
         query.setParameter(1, time_from);
         query.setParameter(2, time_to);
+        return (Integer)query.getSingleResult();
+    }
+
+    @Override
+    public List<Project> getYong360ProjectList(Integer page_size, Integer page_index) throws ParseException {
+        String sql="select c from Project c , ProjectChannel p " +
+                " where c.id = p.projectid and ispushed=0 and channelid=8"+
+                " and projectstatus in ('SCHEDULED','OPENED')" +
+                " limit ?1,?2";
+        TypedQuery query = em.createQuery(sql, Project.class);
+        query.setParameter(1, page_index);
+        query.setParameter(2, page_index+page_size);
+        return query.getResultList();
+    }
+
+    @Override
+    public Integer getYong360ProjectListCount() {
+        String sql="select count(1) from Project c , ProjectChannel p " +
+                " where c.id = p.projectid and ispushed=0 and channelid=8"+
+                " and projectstatus in ('SCHEDULED','OPENED')";
+        TypedQuery query = em.createQuery(sql,Long.class);
         return (Integer)query.getSingleResult();
     }
 }

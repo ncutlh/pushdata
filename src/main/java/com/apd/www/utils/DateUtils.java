@@ -69,4 +69,30 @@ public class DateUtils {
     }
 
 
+    public static String addDays(String date, int i) {
+        try {
+            GregorianCalendar gCal = new GregorianCalendar(
+                    Integer.parseInt(date.substring(0, 4)),
+                    Integer.parseInt(date.substring(5, 7)) - 1,
+                    Integer.parseInt(date.substring(8, 10)));
+            gCal.add(GregorianCalendar.DATE, i);
+            return sdfLong.format(gCal.getTime());
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public static String addMonths(String date, int i) {
+        try {
+            GregorianCalendar gCal = new GregorianCalendar(
+                    Integer.parseInt(date.substring(0, 4)),
+                    Integer.parseInt(date.substring(5, 7)) - 1,
+                    Integer.parseInt(date.substring(8, 10)));
+            gCal.add(GregorianCalendar.MONTH, i);
+            return sdfLong.format(gCal.getTime());
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
 }
