@@ -21,6 +21,9 @@ public class User implements Serializable {
     @Column(name ="registerat")
     private Date registerat;
 
+    @Column(name ="location")
+    private String location;
+
     protected User()
     {
 
@@ -48,5 +51,13 @@ public class User implements Serializable {
 
     public void setRegisterat(Date registerat) {
         this.registerat = registerat;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

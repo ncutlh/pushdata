@@ -2,6 +2,7 @@ package com.apd.www.web;
 
 import com.alibaba.fastjson.JSON;
 import com.apd.www.pojo.*;
+import com.apd.www.pojo.jinpingmei.JinPingMeiParams;
 import com.apd.www.service.InvestService;
 import com.apd.www.service.ProjectService;
 import com.apd.www.service.UserSerivce;

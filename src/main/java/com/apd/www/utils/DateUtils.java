@@ -15,6 +15,16 @@ public class DateUtils {
     static SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static SimpleDateFormat sdfLongMonthCn = new SimpleDateFormat("yyyy-MM");
 
+    public static String getDateLong(Date date) {
+        String nowDate = "";
+        try {
+            if (date != null)
+                nowDate = sdfLong.format(date);
+            return nowDate;
+        } catch (Exception e) {
+            return "";
+        }
+    }
     public static Date getLastMonthFirstDay(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

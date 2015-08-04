@@ -12,4 +12,7 @@ public interface InvestService {
 
 
     List<Investment> getLastMonthInvestList(String channel);
+
+    List<Investment>  getInvestListByPage(int projectid,int page_size,int page_index);
+    Integer getInvestListCount(int projectid);
 }

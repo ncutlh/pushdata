@@ -131,7 +131,7 @@ public class ZhongNiuController {
                              "100%本息担保：阿朋贷对信易融产品实施严格的风控体系，全面保障投资人的利益。一旦项目逾期，阿朋贷立即启动本息保障计划年化收益8.5%~15%,年化收益最高可达40倍银行活期存款收益。",
                              "资金第三方托管：平台不接触投资人资金，由国内知名第三方平台新浪支付进行第三方托管。通过新浪支付P2P托管账户，投资人资金账户与P2P平台自身账户的完全独立，实现资金流与信息流分离，平台方也无法擅自挪用投资人资金，保障投资人的资金安全。",
                              "投资期限灵活：产品设有1个月、3个月、6个月、9个月、12个月，投资人可根据个人理财计划自由选择。信息公开透明：信息全程披露，公开透明，拒绝暗箱操作。",
-                             "资金用途",zhongniuProject.getPurpose());
+                             "资金用途",zhongniuProject.getPurpose()+":"+zhongniuProject.getProjectdescription());
         }else if("CarMortgage".equals(zhongniuProject.getProjectcategory())){//车易融
             keys=Arrays.asList("title","content","content","title","content","content","content","content","title","content");
              values=Arrays.asList("项目简介","【车易融】11%-12%年化收益",
@@ -140,10 +140,10 @@ public class ZhongNiuController {
                     "100%本息担保：如果借款人还款有障碍，阿朋贷会启动本息保障计划，先行用风险准备金垫付，然后通过线下各地区门店对债务方的车辆进行相应处置后获得资金保障。",
                     "资金第三方托管：平台不接触投资人资金，由国内知名第三方平台新浪支付进行第三方托管。通过新浪支付P2P托管账户，投资人资金账户与P2P平台自身账户完全隔离，实现资金流与信息流分离，平台方也无法擅自挪用投资人资金，保障投资人的资金安全。",
                     "投资期限短：车易融借款期限为1个月、3个月，投资期限较短，可以满足投资人短期投资的需要。信息公开透明：信息全程披露，公开透明，拒绝暗箱操作。",
-                    "资金用途",zhongniuProject.getPurpose());
+                    "资金用途",zhongniuProject.getPurpose()+":"+zhongniuProject.getProjectdescription());
         }else{
             keys=Arrays.asList("title","content");
-            values=Arrays.asList("资金用途",zhongniuProject.getPurpose());
+            values=Arrays.asList("资金用途",zhongniuProject.getPurpose()+":"+zhongniuProject.getProjectdescription());
         }
 
         for(int i=0;i<keys.size();i++){

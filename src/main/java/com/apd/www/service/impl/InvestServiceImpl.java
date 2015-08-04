@@ -30,8 +30,6 @@ public class InvestServiceImpl  implements InvestService{
 
     }
 
-
-
     @Override
     public List<Investment> getLastMonthInvestList(String channel) {
         String sql = "select i from Investment i , UserMarket c " +
@@ -46,5 +44,23 @@ public class InvestServiceImpl  implements InvestService{
         query1.setParameter(2, DateUtils.getLastMonthLastDay());
         query1.setParameter(3,channel);
         return query1.getResultList();
+    }
+
+    @Override
+    public List<Investment> getInvestListByPage(int projectid, int page_size, int page_index) {
+        TypedQuery query = em.createQuery("select c from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') limit ?2,?3", Investment.class);
+        query.setParameter(1,projectid);
+        query.setParameter(2, page_index);
+        query.setParameter(3, page_index+page_size);
+        return query.getResultList();
+
+    }
+
+    @Override
+    public Integer getInvestListCount(int projectid) {
+        TypedQuery query = em.createQuery("select count(1) from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Investment.class);
+        query.setParameter(1,projectid);
+        return (Integer )query.getSingleResult();
+
     }
 }
