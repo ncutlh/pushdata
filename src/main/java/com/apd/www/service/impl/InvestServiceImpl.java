@@ -48,19 +48,19 @@ public class InvestServiceImpl  implements InvestService{
 
     @Override
     public List<Investment> getInvestListByPage(int projectid, int page_size, int page_index) {
-        TypedQuery query = em.createQuery("select c from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') limit ?2,?3", Investment.class);
+        TypedQuery query = em.createQuery("select c from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ", Investment.class);
         query.setParameter(1,projectid);
-        query.setParameter(2, page_index);
-        query.setParameter(3, page_index+page_size);
+        query.setFirstResult(page_index-1);
+        query.setMaxResults( page_index+page_size-1);
         return query.getResultList();
 
     }
 
     @Override
-    public Integer getInvestListCount(int projectid) {
-        TypedQuery query = em.createQuery("select count(1) from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Investment.class);
+    public Long getInvestListCount(int projectid) {
+        TypedQuery query = em.createQuery("select count(1) from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Long.class);
         query.setParameter(1,projectid);
-        return (Integer )query.getSingleResult();
+        return (Long)query.getSingleResult();
 
     }
 }

@@ -24,7 +24,7 @@ public class WangDaiTianyanParams {
      */
      Integer page_index;
 
-     List<Object> loans;
+     List loans;
 
     public Integer getResult_code() {
         return result_code;
@@ -58,11 +58,11 @@ public class WangDaiTianyanParams {
         this.page_index = page_index;
     }
 
-    public List<Object> getLoans() {
+    public List getLoans() {
         return loans;
     }
 
-    public void setLoans(List<Object> loans) {
+    public void setLoans(List loans) {
         this.loans = loans;
     }
 }

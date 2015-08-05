@@ -12,6 +12,7 @@ import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,7 @@ import java.util.List;
 /**
  * Created by Liuhong on 2015/8/4.
  */
+@Controller
 public class WangDaiTianYanController {
 
     @Autowired
@@ -39,7 +41,6 @@ public class WangDaiTianYanController {
     static String localUserName = "wangdaitianyan";
     static String localPassword = "735709";
     static String token_key = "sfdsgdskgdksjgdh";
-    static Date timestmp;
     static String token = "";
 
 
@@ -48,7 +49,7 @@ public class WangDaiTianYanController {
         Boolean isValid = false;
         String content = localUserName + localPassword + token_key;
         token = DigestUtils.md5Hex(content.getBytes("utf-8"));
-        if (authToken.trim().equals(token) && timestmp.getTime() - (new Date()).getTime() < 10000)
+        if (authToken.trim().equals(token))
             isValid = true;
         return isValid;
     }
@@ -60,12 +61,23 @@ public class WangDaiTianYanController {
        if(userName.equals(localUserName) && password.equals(localPassword)) {
            String content = userName + password + token_key;
            token = DigestUtils.md5Hex(content.getBytes("utf-8"));
-           timestmp = new Date();
        }
            return token;
     }
 
-    //借款列表数据；
+
+
+    /**
+     * 借款列表数据；
+     * http://lh.apengdai.com/wangdaitianyan/loans?token=241d5f8007939164ac73e953cc274c26&status=0&time_from=2015-07-01%2000:00:00&time_to=2015-08-12%2023:59:59&page_size=10&page_index=1
+     * @param token
+     * @param status
+     * @param time_from
+     * @param time_to
+     * @param page_size
+     * @param page_index
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/loans")
     public String loans(@RequestParam("token") String token,
@@ -89,7 +101,7 @@ public class WangDaiTianYanController {
             }
 
             List<Project> wdtyProjectList = projectService.getWDTYProjectList(status, time_from, time_to, page_size, page_index);
-            Integer countProjects = projectService.getWDTYProjectListCount(status, time_from, time_to);
+            Long countProjects = projectService.getWDTYProjectListCount(status, time_from, time_to);
 
             if (countProjects <= 0) {
                 wangDaiTianyanParams.setResult_code(-1);
@@ -157,6 +169,7 @@ public class WangDaiTianYanController {
 
                 loans.add(wDTYProjectParams);
             }
+            wangDaiTianyanParams.setLoans(loans);
         } catch (Exception e) {
 
             wangDaiTianyanParams.setResult_code(0);
@@ -192,7 +205,7 @@ public class WangDaiTianYanController {
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
             List<Investment> investments = investService.getInvestListByPage(id, page_size, page_index);
-            Integer countInvestments = investService.getInvestListCount(id);
+            Long countInvestments = investService.getInvestListCount(id);
 
             if (countInvestments <= 0) {
                 wangDaiTianyanParams.setResult_code(-1);
@@ -218,7 +231,7 @@ public class WangDaiTianYanController {
                 wangDaiTianYanInvParams.setAdd_time(DateUtils.getDateLong(investment.getCreateat()));// 投标时间
                 loans.add(wangDaiTianYanInvParams);
             }
-
+            wangDaiTianyanParams.setLoans(loans);
 
         } catch (Exception e) {
 

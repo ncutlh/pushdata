@@ -219,6 +219,8 @@ public class Project {
      */
     private Date dealdate;
 
+    private Date createat;
+
     public String getProjectname() {
         return projectname;
     }
@@ -470,6 +472,14 @@ public class Project {
 
     public void setInterestamount(BigDecimal interestamount) {
         this.interestamount = interestamount;
+    }
+
+    public Date getCreateat() {
+        return createat;
+    }
+
+    public void setCreateat(Date createat) {
+        this.createat = createat;
     }
 
     /**

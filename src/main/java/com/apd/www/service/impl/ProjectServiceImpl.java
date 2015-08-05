@@ -79,41 +79,40 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getWDTYProjectList(Integer status,String time_from,String time_to,Integer page_size,Integer page_index) throws ParseException{
-        String sql="select c from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=7";
+        String sql="select c from Project c,ProjectChannel p" +
+                " where c.id = p.projectid and channelid=7 and c.createat between ?1 and ?2";
         if(status==0){
-            sql += " and c.createAt between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED')" +
-                    " limit ?3,?4";
+            sql += " and projectstatus in ('SCHEDULED','OPENED')";
         }else if(status==1){
-            sql += " and c.dealdate between ?1 and ?2 and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')" +
-                   " limit ?3,?4";
+            sql += " and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')";
         }else{
-            sql += " and c.createat between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED','FINISHED','SETTLED','CLEARED','ARCHIVED')"+
-                    " limit ?3,?4";
+            sql += " and projectstatus in ('SCHEDULED','OPENED','FINISHED','SETTLED','CLEARED','ARCHIVED')";
         }
         TypedQuery query = em.createQuery(sql, Project.class);
-        query.setParameter(1, time_from);
-        query.setParameter(2, time_to);
-        query.setParameter(3, page_index);
-        query.setParameter(4, page_index+page_size);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        query.setParameter(1, sdf.parse(time_from));
+        query.setParameter(2, sdf.parse(time_to));
+        query.setFirstResult(page_index-1);
+        query.setMaxResults( page_index+page_size-1);
         return query.getResultList();
     }
 
     @Override
-    public Integer getWDTYProjectListCount(Integer status, String time_from, String time_to) throws ParseException {
+    public Long getWDTYProjectListCount(Integer status, String time_from, String time_to) throws ParseException {
         String sql="select count(1) from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=7";
+                " where c.id = p.projectid and ispushed=0 and channelid=7  and c.createat between ?1 and ?2";
         if(status==0){
-            sql += " and c.createAt between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED')";
+            sql += " and projectstatus in ('SCHEDULED','OPENED')";
         }else if(status==1){
-            sql += " and c.dealdate between ?1 and ?2 and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')";
+            sql += " and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')";
         }else{
-            sql += " and c.createat between ?1 and ?2 and projectstatus in ('SCHEDULED','OPENED','FINISHED','SETTLED','CLEARED','ARCHIVED')";
+            sql += " and projectstatus in ('SCHEDULED','OPENED','FINISHED','SETTLED','CLEARED','ARCHIVED')";
         }
         TypedQuery query = em.createQuery(sql,Long.class);
-        query.setParameter(1, time_from);
-        query.setParameter(2, time_to);
-        return (Integer)query.getSingleResult();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        query.setParameter(1, sdf.parse(time_from));
+        query.setParameter(2, sdf.parse(time_to));
+        return (Long)query.getSingleResult();
     }
 
     @Override

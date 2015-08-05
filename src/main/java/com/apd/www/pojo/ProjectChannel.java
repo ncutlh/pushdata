@@ -19,19 +19,12 @@ public class ProjectChannel {
     private Integer projectid;
     @Column(name = "channelId")
     private Integer channelid;
-    private Date createAt;
+
     @Column(name = "isPushed")
     private boolean ispushed;
     private Date updateAt;
 
 
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
 
     public Integer getPushid() {
 
