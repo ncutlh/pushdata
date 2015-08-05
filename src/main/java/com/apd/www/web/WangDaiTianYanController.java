@@ -183,12 +183,21 @@ public class WangDaiTianYanController {
 
     //投资列表数据；
     //借款列表数据；
+
+    /**
+     * http://lh.apengdai.com/wangdaitianyan/data?token=241d5f8007939164ac73e953cc274c26&status=0&page_size=10&page_index=1&id=7527
+     * @param token
+     * @param id
+     * @param page_size
+     * @param page_index
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/data")
     public String data(@RequestParam("token")String token,
-                        @RequestParam("status")Integer id,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
-                        @RequestParam("time_from")String time_from,//状态为1 是对应平台满标字段的值检索  状态为0就以平台发标时间字段检索
-                        @RequestParam("time_to")String time_to,// 状态为1 是对应平台满标字段的值检索 状态为0 就以平台发标时间字段检索
+                        @RequestParam("id")Integer id,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
+//                        @RequestParam("time_from")String time_from,//状态为1 是对应平台满标字段的值检索  状态为0就以平台发标时间字段检索
+//                        @RequestParam("time_to")String time_to,// 状态为1 是对应平台满标字段的值检索 状态为0 就以平台发标时间字段检索
                         @RequestParam("page_size")Integer page_size,//(不做分页总页为1,分页从1 开始向上取整,不要给小数)
                         @RequestParam("page_index")Integer page_index) {
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
