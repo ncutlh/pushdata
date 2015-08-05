@@ -20,11 +20,11 @@ public class Rong360Params {
     private Integer borrow_time_unit;//是	借款时长单位，1为天，2为月，3为年
     private Integer tender_num;//是	已投资人数量（随进度更新）
     private BigDecimal progress;//是	投资完成进度（<=1，4位有效数字），已经募集的金额除以计划募集金额
-    private String publish_time;//否	发布时间
-    private String start_time;//是	募资开始时间
-    private String end_time;//是	募资结束时间（完成募资时必须，未满标则置为0）
-    private String repay_start_time;//是	还款开始时间（完成募资时必须，未满标则置为0）
-    private String repay_end_time;//是	还款结束时间（完成募资时必须，未满标则置为0）
+    private long publish_time;//否	发布时间
+    private long start_time;//是	募资开始时间
+    private long end_time;//是	募资结束时间（完成募资时必须，未满标则置为0）
+    private long repay_start_time;//是	还款开始时间（完成募资时必须，未满标则置为0）
+    private long repay_end_time;//是	还款结束时间（完成募资时必须，未满标则置为0）
     private Integer status;//是	标状态{-1:流标，0：筹款中，1:已满标，2：已开始还款,3:预发布，4:还款完成，5:逾期}
     private Integer borrow_type;//是	1 抵押借款 2 信用借款  3 质押借款 4 第三方担保 5 净值标
     private Integer pay_type	;//是	1 按月付息 到期还本 2 按季付息，到期还本3 每月等额本息  4 到期还本息 5 按周等额本息还款 6按周付息，到期还本 7提前付息，到期一次性还本
@@ -146,43 +146,43 @@ public class Rong360Params {
         this.progress = progress;
     }
 
-    public String getPublish_time() {
+    public long getPublish_time() {
         return publish_time;
     }
 
-    public void setPublish_time(String publish_time) {
+    public void setPublish_time(long publish_time) {
         this.publish_time = publish_time;
     }
 
-    public String getStart_time() {
+    public long getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(String start_time) {
+    public void setStart_time(long start_time) {
         this.start_time = start_time;
     }
 
-    public String getEnd_time() {
+    public long getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(String end_time) {
+    public void setEnd_time(long end_time) {
         this.end_time = end_time;
     }
 
-    public String getRepay_start_time() {
+    public long getRepay_start_time() {
         return repay_start_time;
     }
 
-    public void setRepay_start_time(String repay_start_time) {
+    public void setRepay_start_time(long repay_start_time) {
         this.repay_start_time = repay_start_time;
     }
 
-    public String getRepay_end_time() {
+    public long getRepay_end_time() {
         return repay_end_time;
     }
 
-    public void setRepay_end_time(String repay_end_time) {
+    public void setRepay_end_time(long repay_end_time) {
         this.repay_end_time = repay_end_time;
     }
 

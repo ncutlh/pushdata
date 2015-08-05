@@ -119,21 +119,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> getYong360ProjectList(Integer page_size, Integer page_index) throws ParseException {
         String sql="select c from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=8"+
-                " and projectstatus in ('SCHEDULED','OPENED')" +
-                " limit ?1,?2";
+                " where c.id = p.projectid and ispushed=0 and channelid=8";//+
+//                " and projectstatus in ('SCHEDULED','OPENED')";
         TypedQuery query = em.createQuery(sql, Project.class);
-        query.setParameter(1, page_index);
-        query.setParameter(2, page_index+page_size);
+        query.setFirstResult(page_index-1);
+        query.setMaxResults( page_index+page_size-1);
         return query.getResultList();
     }
 
     @Override
-    public Integer getYong360ProjectListCount() {
+    public Long getYong360ProjectListCount() {
         String sql="select count(1) from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=8"+
-                " and projectstatus in ('SCHEDULED','OPENED')";
+                " where c.id = p.projectid and ispushed=0 and channelid=8";//+
+//                " and projectstatus in ('SCHEDULED','OPENED')";
         TypedQuery query = em.createQuery(sql,Long.class);
-        return (Integer)query.getSingleResult();
+        return (Long)query.getSingleResult();
     }
 }

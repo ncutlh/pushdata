@@ -69,16 +69,16 @@ public class DateUtils {
     }
 
 
-    public static String addDays(String date, int i) {
+    public static Date addDays(String date, int i) {
         try {
             GregorianCalendar gCal = new GregorianCalendar(
                     Integer.parseInt(date.substring(0, 4)),
                     Integer.parseInt(date.substring(5, 7)) - 1,
                     Integer.parseInt(date.substring(8, 10)));
             gCal.add(GregorianCalendar.DATE, i);
-            return sdfLong.format(gCal.getTime());
+            return gCal.getTime();
         } catch (Exception e) {
-            return "";
+            return null;
         }
     }
 

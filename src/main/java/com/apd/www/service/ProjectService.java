@@ -28,5 +28,5 @@ public interface ProjectService {
 
     public List<Project> getYong360ProjectList(Integer page_size,Integer page_index) throws ParseException;
 
-    public Integer getYong360ProjectListCount();
+    public Long getYong360ProjectListCount();
 }

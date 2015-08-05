@@ -13,6 +13,7 @@ import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,7 @@ import java.util.*;
 /**
  * Created by Liuhong on 2015/8/4.
  */
+@Controller
 public class Rong360Controller {
 
     @Autowired
@@ -31,21 +33,15 @@ public class Rong360Controller {
     @Autowired
     private InvestService investService;
 
-    @Autowired
-    private UserSerivce userSerivce;
 
-    static String userName = "rong360";
-    static String password = "735709";
-    static Date timestmp;
-    static String token_key = "sdfsfdsfdsfsfs";
+    static String token_key = "alskjdhfgnvbcmxk";
 
 
     //校验AuthToken
     public boolean checkAuthToken(String authToken,String t) throws Exception {
         Boolean isValid = false;
-        String token=DigestUtils.md5Hex(DigestUtils.md5Hex(t)+authToken);
         String localtoken=DigestUtils.md5Hex(DigestUtils.md5Hex(t)+token_key);
-        if (localtoken.trim().equals(token))
+        if (localtoken.trim().equals(authToken))
             isValid = true;
         return isValid;
     }
@@ -63,44 +59,45 @@ public class Rong360Controller {
             if (token == null || "".equals(token) || !checkAuthToken(token,t)) {
                 rong360ParamsMap.put("status",100);
                 rong360ParamsMap.put("msg","token验证失败");
-                rong360ParamsMap.put("data","{}");
+                rong360ParamsMap.put("data",null);
                 return JSON.toJSONString(rong360ParamsMap);
             }
 
             if (page == null || count==null) {
                 rong360ParamsMap.put("status",100);
                 rong360ParamsMap.put("msg","page或count为空");
-                rong360ParamsMap.put("data","{}");
+                rong360ParamsMap.put("data",null);
                 return JSON.toJSONString(rong360ParamsMap);
             }
 
             List<Project> rong360ProjectList = projectService.getYong360ProjectList(count,page);
-            Integer countProjects = projectService.getYong360ProjectListCount();
+            Long countProjects = projectService.getYong360ProjectListCount();
 
             if (countProjects <= 0) {
               rong360ParamsMap.put("version",2);
               rong360ParamsMap.put("status",0);
               rong360ParamsMap.put("msg","");
-              rong360ParamsMap.put("data","{}");
+              rong360ParamsMap.put("data",null);
               return JSON.toJSONString(rong360ParamsMap);
             }
 
             rong360ParamsMap.put("version",2);
             rong360ParamsMap.put("status",0);
             rong360ParamsMap.put("msg","");
-            rong360ParamsMap.put("total_number",rong360ProjectList.size());
+
             List<Rong360Params> loans = new ArrayList<Rong360Params>();
             for (Project project : rong360ProjectList) {
                 loans.add(getparams(project));
             }
             Map<String,Object> listMap = new HashMap<String, Object>();
             listMap.put("list", loans);
+            listMap.put("total_number", rong360ProjectList.size());
             rong360ParamsMap.put("data", listMap);
 
         } catch (Exception e) {
             rong360ParamsMap.put("status",100);
             rong360ParamsMap.put("msg",e.getMessage());
-            rong360ParamsMap.put("data","{}");
+            rong360ParamsMap.put("data",null);
             return JSON.toJSONString(rong360ParamsMap);
         }
 
@@ -120,24 +117,27 @@ public class Rong360Controller {
             if (token == null || "".equals(token) || !checkAuthToken(token,t)) {
                 rong360ParamsMap.put("status",100);
                 rong360ParamsMap.put("msg","token验证失败");
-                rong360ParamsMap.put("data","{}");
+                rong360ParamsMap.put("data",null);
                 return JSON.toJSONString(rong360ParamsMap);
             }
            Project project = projectService.findById(product_id);
 
             if (project ==null) {
-                rong360ParamsMap.put("status",100);
-                rong360ParamsMap.put("msg","");
-                rong360ParamsMap.put("data","{}");
+                rong360ParamsMap.put("status", 100);
+                rong360ParamsMap.put("msg", "");
+                rong360ParamsMap.put("data", null);
                 return JSON.toJSONString(rong360ParamsMap);
             }
-            List<Rong360Params> loans = new ArrayList<Rong360Params>();
-            loans.add(getparams(project));
-            rong360ParamsMap.put("data", loans);
+
+            rong360ParamsMap.put("version",2);
+            rong360ParamsMap.put("status",0);
+            rong360ParamsMap.put("msg","");
+
+            rong360ParamsMap.put("data", getparams(project));
         } catch (Exception e) {
             rong360ParamsMap.put("status",100);
-            rong360ParamsMap.put("msg",e.getMessage());
-            rong360ParamsMap.put("data","{}");
+            rong360ParamsMap.put("msg", e.getMessage());
+            rong360ParamsMap.put("data", null);
             return JSON.toJSONString(rong360ParamsMap);
         }
 
@@ -171,38 +171,48 @@ public class Rong360Controller {
             rong360Params.setTender_num(0);
 
          rong360Params.setProgress(project.getProgressPercent());//是	投资完成进度（<=1，4位有效数字），已经募集的金额除以计划募集金额
-         rong360Params.setPublish_time(DateUtils.getDateLong(project.getExpectedonlinedate()));//否	发布时间
-         rong360Params.setStart_time(DateUtils.getDateLong(project.getAllowinvestat()));//是	募资开始时间
-         rong360Params.setEnd_time(DateUtils.getDateLong(project.getBiddeadline()));//是	募资结束时间（完成募资时必须，未满标则置为0）
+         rong360Params.setPublish_time(project.getExpectedonlinedate().getTime()/1000);//否	发布时间
+         rong360Params.setStart_time(project.getAllowinvestat().getTime()/1000);//是	募资开始时间
+
         if(project.getDealdate()!=null) {
-            rong360Params.setRepay_start_time(DateUtils.getDateLong(project.getDealdate()));//是	还款开始时间（完成募资时必须，未满标则置为0）
+            rong360Params.setRepay_start_time(project.getDealdate().getTime()/1000);//是	还款开始时间（完成募资时必须，未满标则置为0）
 
             if (BigDecimal.ONE.compareTo(project.getFinancingmaturity()) > 0) {
-                rong360Params.setRepay_end_time(DateUtils.addDays(DateUtils.getDateLong(project.getDealdate()),project.getFinancingmaturityday()));//是	还款结束时间（完成募资时必须，未满标则置为0）
+                rong360Params.setRepay_end_time(DateUtils.addDays(DateUtils.getDateLong(project.getDealdate()),project.getFinancingmaturityday()).getTime()/1000);//是	还款结束时间（完成募资时必须，未满标则置为0）
             }else {
-                rong360Params.setRepay_end_time(DateUtils.addDays(DateUtils.getDateLong(project.getDealdate()),project.getFinancingmaturity().intValue()));//是	还款结束时间（完成募资时必须，未满标则置为0）
+                rong360Params.setRepay_end_time(DateUtils.addDays(DateUtils.getDateLong(project.getDealdate()),project.getFinancingmaturity().intValue()).getTime()/1000);//是	还款结束时间（完成募资时必须，未满标则置为0）
             }
 
         }else{
-            rong360Params.setRepay_start_time("0");//是	还款开始时间（完成募资时必须，未满标则置为0）
-            rong360Params.setRepay_end_time("0");//是	还款结束时间（完成募资时必须，未满标则置为0）
+            rong360Params.setRepay_start_time(Long.parseLong("0"));//是	还款开始时间（完成募资时必须，未满标则置为0）
+            rong360Params.setRepay_end_time(Long.parseLong("0"));//是	还款结束时间（完成募资时必须，未满标则置为0）
         }
         //是	标状态{-1:流标，0：筹款中，1:已满标，2：已开始还款,3:预发布，4:还款完成，5:逾期}
         if (project.getProjectstatus().equals("CANCELED")) {
             rong360Params.setStatus(-1);
+            rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
         } else if (project.getProjectstatus().equals("SCHEDULED")) {
+            rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(3);
         } else if (project.getProjectstatus().equals("OPENED")) {
+            rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(0);
         } else if (project.getProjectstatus().equals("FINISHED")) {
+            rong360Params.setEnd_time(project.getBiddeadline().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(1);
         } else if (project.getProjectstatus().equals("SETTLED")) {
+            rong360Params.setEnd_time(project.getBiddeadline().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(2);
         } else if (project.getProjectstatus().equals("CLEARED")) {
+            rong360Params.setEnd_time(project.getBiddeadline().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(4);
         } else if (project.getProjectstatus().equals("ARCHIVED")) {
+            rong360Params.setEnd_time(project.getBiddeadline().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(4);
         }
+
+        //to do 注意修改
+        rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
         //是	1 抵押借款 2 信用借款  3 质押借款 4 第三方担保 5 净值标
         if ("PersonalCredit".equals(project.getProjectcategory())){//"信易融"
             rong360Params.setBorrow_type(2);
@@ -212,7 +222,7 @@ public class Rong360Controller {
 
         //是	1 按月付息 到期还本 2 按季付息，到期还本3 每月等额本息  4 到期还本息 5 按周等额本息还款 6按周付息，到期还本 7提前付息，到期一次性还本款方式，单种还款方式请用数值，如：1；多种还款方式请用英文’,’组合，如1,2,3；其余还款方式请沟通确认
         if (project.getRepaymentcalctype().equals("OneInterestOnePrincipal"))
-            rong360Params.setPay_type(7);
+            rong360Params.setPay_type(4);
         else if ("MonthlyInterestOnePrincipal".equals(project.getRepaymentcalctype()))
             rong360Params.setPay_type(1);
         else if ("EqualPrincipalAndInterest".equals(project.getRepaymentcalctype()))
