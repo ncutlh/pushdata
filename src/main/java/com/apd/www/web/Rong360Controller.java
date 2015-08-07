@@ -192,10 +192,10 @@ public class Rong360Controller {
             rong360Params.setStatus(-1);
             rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
         } else if (project.getProjectstatus().equals("SCHEDULED")) {
-            rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
+            rong360Params.setEnd_time(0);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(3);
         } else if (project.getProjectstatus().equals("OPENED")) {
-            rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
+            rong360Params.setEnd_time(0);//是	募资结束时间（完成募资时必须，未满标则置为0）
             rong360Params.setStatus(0);
         } else if (project.getProjectstatus().equals("FINISHED")) {
             rong360Params.setEnd_time(project.getBiddeadline().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
@@ -211,8 +211,6 @@ public class Rong360Controller {
             rong360Params.setStatus(4);
         }
 
-        //to do 注意修改
-        rong360Params.setEnd_time(project.getAllowinvestat().getTime()/1000);//是	募资结束时间（完成募资时必须，未满标则置为0）
         //是	1 抵押借款 2 信用借款  3 质押借款 4 第三方担保 5 净值标
         if ("PersonalCredit".equals(project.getProjectcategory())){//"信易融"
             rong360Params.setBorrow_type(2);

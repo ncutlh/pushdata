@@ -87,17 +87,15 @@ public class JinPingMeiController {
     @ResponseBody
     private String getProjectStatus(@PathVariable("projectId") Integer projectId){
 
+
         Project project = projectService.findById(projectId);
-        if( project.isIspushtojinpingmei()){
             Map<String,Integer> statusMap=new HashMap<String,Integer>();
             if(project.getProjectstatus().equals("OPENED"))
                 statusMap.put("status",1);
             else
                 statusMap.put("status",2);
             return JSON.toJSONString(statusMap) ;
-        }else{
-            return null;
-        }
+
 
 
     }
