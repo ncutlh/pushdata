@@ -54,6 +54,7 @@ public class WangDaiTianYanController {
         return isValid;
     }
 
+     //http://lh.apengdai.com/wangdaitianyan/token?userName=wangdaitianyan&password=735709
     //Token 请求
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/token")
