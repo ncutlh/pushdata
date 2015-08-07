@@ -46,7 +46,7 @@ public class Rong360Controller {
         return isValid;
     }
 
-
+    //http://www.rong360.com/licai-p2p/verify
     //借款列表数据；
     @ResponseBody
     @RequestMapping(value = "/rong360/loans")
