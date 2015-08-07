@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
  * Created by Liuhong on 2015/7/31.
  */
 public class DateUtils {
-
+    static SimpleDateFormat sdfshot = new SimpleDateFormat("yyyy-MM-dd");
     static SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     static SimpleDateFormat sdfLongMonthCn = new SimpleDateFormat("yyyy-MM");
 
@@ -34,7 +34,7 @@ public class DateUtils {
         GregorianCalendar gcLast = (GregorianCalendar) Calendar.getInstance();
         gcLast.setTime(theDate);
         gcLast.set(Calendar.DAY_OF_MONTH, 1);
-        String day_first = sdfLong.format(gcLast.getTime());
+        String day_first = sdfshot.format(gcLast.getTime());
         StringBuffer str = new StringBuffer().append(day_first).append(" 00:00:00");
         day_first = str.toString();
         Date first_day=null;
@@ -56,7 +56,7 @@ public class DateUtils {
         calendar.add(Calendar.MONTH, 1);    //加一个月
         calendar.set(Calendar.DATE, 1);        //设置为该月第一天
         calendar.add(Calendar.DATE, -1);    //再减一天即为上个月最后一天
-        String day_last = sdfLong.format(calendar.getTime());
+        String day_last = sdfshot.format(calendar.getTime());
         StringBuffer endStr = new StringBuffer().append(day_last).append(" 23:59:59");
         day_last = endStr.toString();
         Date last_day=null;
