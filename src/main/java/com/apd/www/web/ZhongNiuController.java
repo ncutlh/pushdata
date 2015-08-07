@@ -54,7 +54,7 @@ public class ZhongNiuController {
             Map<String, Object> listObject = new HashMap<String, Object>();
             listObject.put("pid", String.valueOf(project.getId()));
             listObject.put("amounted", project.getAmount());
-            listObject.put("progress", project.getInvestmentedamount().divide(project.getAmount(), 2));
+            listObject.put("progress", project.getProgressPercent().multiply(new BigDecimal(100)).floatValue());
             if ("SCHEDULED".equals(project.getProjectstatus())) {
                 listObject.put("status", 0);
             } else if ("OPENED".equals(project.getProjectstatus())) {

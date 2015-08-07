@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getZhongniuProjectList() throws ParseException {
-        TypedQuery query = em.createQuery("select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=6", Project.class);
+        TypedQuery query = em.createQuery("select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=6 and  projectstatus != 'INITIATED'", Project.class);
         return query.getResultList();
     }
 
@@ -118,8 +118,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> getYong360ProjectList(Integer page_size, Integer page_index) throws ParseException {
         String sql="select c from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=8";//+
-//                " and projectstatus in ('SCHEDULED','OPENED')";
+                " where c.id = p.projectid and ispushed=0 and channelid=8"+
+                " and projectstatus in ('SCHEDULED','OPENED')";
         TypedQuery query = em.createQuery(sql, Project.class);
         query.setFirstResult(page_index-1);
         query.setMaxResults( page_index+page_size-1);
@@ -129,8 +129,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Long getYong360ProjectListCount() {
         String sql="select count(1) from Project c , ProjectChannel p " +
-                " where c.id = p.projectid and ispushed=0 and channelid=8";//+
-//                " and projectstatus in ('SCHEDULED','OPENED')";
+                " where c.id = p.projectid and ispushed=0 and channelid=8"+
+                " and projectstatus in ('SCHEDULED','OPENED')";
         TypedQuery query = em.createQuery(sql,Long.class);
         return (Long)query.getSingleResult();
     }
