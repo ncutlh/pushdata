@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Liuhong on 2015/8/4.
@@ -41,7 +39,7 @@ public class WangDaiTianYanController {
     static String localUserName = "wangdaitianyan";
     static String localPassword = "735709";
     static String token_key = "sfdsgdskgdksjgdh";
-    static String token = "";
+    static String token = null;
 
 
     //校验AuthToken
@@ -59,11 +57,18 @@ public class WangDaiTianYanController {
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/token")
     private static String token(@RequestParam("username") String username,@RequestParam("password") String password) throws Exception {
-       if(username.equals(localUserName) && password.equals(localPassword)) {
+       int result=-1;
+        if(username.equals(localUserName) && password.equals(localPassword)) {
            String content = username + password + token_key;
            token = DigestUtils.md5Hex(content.getBytes("utf-8"));
+            result=1;
        }
-           return token;
+        Map<String,Object> reMap = new HashMap<String,Object>();
+        reMap.put("result",result);
+        Map<String,Object> re2Map = new HashMap<String,Object>();
+        re2Map.put("token",token);
+        reMap.put("data",re2Map);
+        return JSON.toJSONString(reMap);
     }
 
 
@@ -160,12 +165,15 @@ public class WangDaiTianYanController {
                 wDTYProjectParams.setReward(BigDecimal.ZERO);
                 wDTYProjectParams.setGuarantee(BigDecimal.ZERO);
                 wDTYProjectParams.setStart_time(DateUtils.getDateLong(project.getAllowinvestat()));// "2014-03-13 14:44:26",标的创建时间(不为空)
-                wDTYProjectParams.setEnd_time(DateUtils.getDateLong(project.getBiddeadline()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+
                 List<Investment> investments = investService.getInvestList(project.getId());
-                if (investments != null && investments.size() > 0)
+                if (investments != null && investments.size() > 0) {
                     wDTYProjectParams.setInvest_num(investments.size());// “5”,投资次数(尽量不为空)
-                else
+                    wDTYProjectParams.setEnd_time(DateUtils.getDateLong(investments.get(investments.size()-1).getCreateat()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+                }else {
                     wDTYProjectParams.setInvest_num(0);
+                    wDTYProjectParams.setEnd_time(DateUtils.getDateLong(project.getAllowinvestat()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+                }
                 wDTYProjectParams.setC_reward(BigDecimal.ZERO);
 
                 loans.add(wDTYProjectParams);
