@@ -11,6 +11,8 @@ import com.apd.www.service.ProjectService;
 import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -136,7 +137,15 @@ public class WangDaiTianYanController {
                 } else {
                     wDTYProjectParams.setStatus(1);
                 }
-                wDTYProjectParams.setUserid(project.getBorroweruserid());
+
+                if(project.getIsrealborrower()){
+                    wDTYProjectParams.setUserid(Math.abs(project.getRealborrowername().hashCode()));
+                } else {
+                    wDTYProjectParams.setUserid(Math.abs(StringUtils.isNotEmpty(project.getRealborroweridcard()) ? project.getRealborroweridcard().hashCode():0));
+                }
+
+
+
                 // 0 代表信用标，1 担保标，2 抵押标，3秒标，4 债权转让标（流转标，二级市场标的），5 理财计划（宝类业务），6 其它
                 if ("PersonalCredit".equals(project.getProjectcategory())) {//"信易融"
                     wDTYProjectParams.setC_type(0);
@@ -161,7 +170,11 @@ public class WangDaiTianYanController {
                 else if ("MonthlyInterestOnePrincipal".equals(project.getRepaymentcalctype()))
                     wDTYProjectParams.setPay_way(2);
                 else if ("EqualPrincipalAndInterest".equals(project.getRepaymentcalctype()))
-                    wDTYProjectParams.setProcess(project.getProgressPercent());
+                    wDTYProjectParams.setPay_way(1);
+                else
+                     wDTYProjectParams.setPay_way(0);
+
+                wDTYProjectParams.setProcess(project.getProgressPercent());
                 wDTYProjectParams.setReward(BigDecimal.ZERO);
                 wDTYProjectParams.setGuarantee(BigDecimal.ZERO);
                 wDTYProjectParams.setStart_time(DateUtils.getDateLong(project.getAllowinvestat()));// "2014-03-13 14:44:26",标的创建时间(不为空)
