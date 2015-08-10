@@ -95,13 +95,13 @@ public class WangDaiTianYanController {
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token)) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("未授权的访问!");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
             if (page_size == null) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("page_size is null");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
@@ -110,18 +110,18 @@ public class WangDaiTianYanController {
             Long countProjects = projectService.getWDTYProjectListCount(status, time_from, time_to);
 
             if (countProjects <= 0) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("没有标");
-                wangDaiTianyanParams.setPage_count(0);
-                wangDaiTianyanParams.setPage_index(page_index);
+                wangDaiTianyanParams.setPage_count("0");
+                wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
                 wangDaiTianyanParams.setLoans(null);
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
-            wangDaiTianyanParams.setResult_code(1);
-            wangDaiTianyanParams.setResult_msg("");
-            wangDaiTianyanParams.setPage_count((int) Math.ceil((double) countProjects / page_size));
-            wangDaiTianyanParams.setPage_index(page_index);
+            wangDaiTianyanParams.setResult_code("1");
+            wangDaiTianyanParams.setResult_msg("获取数据成功");
+            wangDaiTianyanParams.setPage_count(String.valueOf((int) Math.ceil((double) countProjects / page_size)));
+            wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
             List<WangDaiTianYanProjectParams> loans = new ArrayList<WangDaiTianYanProjectParams>();
             for (Project project : wdtyProjectList) {
                 WangDaiTianYanProjectParams wDTYProjectParams = new WangDaiTianYanProjectParams();
@@ -181,7 +181,7 @@ public class WangDaiTianYanController {
             wangDaiTianyanParams.setLoans(loans);
         } catch (Exception e) {
 
-            wangDaiTianyanParams.setResult_code(0);
+            wangDaiTianyanParams.setResult_code("0");
             wangDaiTianyanParams.setResult_msg(e.getMessage());
             return JSON.toJSONString(wangDaiTianyanParams);
         }
@@ -212,13 +212,13 @@ public class WangDaiTianYanController {
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token)) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("未授权的访问!");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
             if (page_size == null) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("page_size is null");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
@@ -226,13 +226,19 @@ public class WangDaiTianYanController {
             Long countInvestments = investService.getInvestListCount(id);
 
             if (countInvestments <= 0) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("没有标");
-                wangDaiTianyanParams.setPage_count(0);
-                wangDaiTianyanParams.setPage_index(page_index);
+                wangDaiTianyanParams.setPage_count("0");
+                wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
                 wangDaiTianyanParams.setLoans(null);
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
+
+            wangDaiTianyanParams.setResult_code("1");
+            wangDaiTianyanParams.setResult_msg("获取数据成功");
+            wangDaiTianyanParams.setPage_count(String.valueOf((int) Math.ceil((double) countInvestments / page_size)));
+            wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
+
             List<WangDaiTianYanInvParams> loans = new ArrayList<WangDaiTianYanInvParams>();
             for(Investment investment:investments){
                 WangDaiTianYanInvParams wangDaiTianYanInvParams = new WangDaiTianYanInvParams();
@@ -253,7 +259,7 @@ public class WangDaiTianYanController {
 
         } catch (Exception e) {
 
-            wangDaiTianyanParams.setResult_code(0);
+            wangDaiTianyanParams.setResult_code("0");
             wangDaiTianyanParams.setResult_msg(e.getMessage());
             return JSON.toJSONString(wangDaiTianyanParams);
         }
