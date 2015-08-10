@@ -2,14 +2,9 @@ package com.apd.www.web;
 import com.alibaba.fastjson.JSON;
 import com.apd.www.pojo.Investment;
 import com.apd.www.pojo.Project;
-import com.apd.www.pojo.User;
 import com.apd.www.pojo.rong360.Rong360Params;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianYanInvParams;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianYanProjectParams;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianyanParams;
 import com.apd.www.service.InvestService;
 import com.apd.www.service.ProjectService;
-import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,9 +69,8 @@ public class Rong360Controller {
             Long countProjects = projectService.getYong360ProjectListCount();
 
             if (countProjects <= 0) {
-              rong360ParamsMap.put("version",2);
-              rong360ParamsMap.put("status",0);
-              rong360ParamsMap.put("msg","");
+              rong360ParamsMap.put("status",100);
+              rong360ParamsMap.put("msg","没有符合条件的数据");
               rong360ParamsMap.put("data",null);
               return JSON.toJSONString(rong360ParamsMap);
             }

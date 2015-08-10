@@ -58,9 +58,9 @@ public class WangDaiTianYanController {
     //Token 请求
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/token")
-    private static String token(@RequestParam("userName") String userName,@RequestParam("password") String password) throws Exception {
-       if(userName.equals(localUserName) && password.equals(localPassword)) {
-           String content = userName + password + token_key;
+    private static String token(@RequestParam("username") String username,@RequestParam("password") String password) throws Exception {
+       if(username.equals(localUserName) && password.equals(localPassword)) {
+           String content = username + password + token_key;
            token = DigestUtils.md5Hex(content.getBytes("utf-8"));
        }
            return token;
