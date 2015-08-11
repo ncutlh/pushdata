@@ -87,7 +87,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getWDTYProjectList(Integer status,String time_from,String time_to,Integer page_size,Integer page_index) throws ParseException{
-        String sql="select c from Project c where c.id !=2809 and  c.id !=3040 and c.allowinvestat between ?1 and ?2";
+        String sql="select c from Project c,ProjectChannel p" +
+                " where c.id = p.projectid and channelid=7 and c.allowinvestat between ?1 and ?2";
         if(status==0){
             sql += " and projectstatus in ('SCHEDULED','OPENED')";
         }else if(status==1){
@@ -99,14 +100,15 @@ public class ProjectServiceImpl implements ProjectService {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         query.setParameter(1, sdf.parse(time_from));
         query.setParameter(2, sdf.parse(time_to));
-        query.setFirstResult(page_index-1);
-        query.setMaxResults( page_index+page_size-1);
+        query.setFirstResult(page_size*(page_index-1));
+        query.setMaxResults(page_size);
         return query.getResultList();
     }
 
     @Override
     public Long getWDTYProjectListCount(Integer status, String time_from, String time_to) throws ParseException {
-        String sql="select count(1) from Project c where c.id !=2809 and  c.id !=3040  and c.allowinvestat between ?1 and ?2";
+        String sql="select count(1) from Project c , ProjectChannel p " +
+                " where c.id = p.projectid and ispushed=0 and channelid=7  and c.allowinvestat between ?1 and ?2";
         if(status==0){
             sql += " and projectstatus in ('SCHEDULED','OPENED')";
         }else if(status==1){
@@ -130,8 +132,8 @@ public class ProjectServiceImpl implements ProjectService {
         TypedQuery query = em.createQuery(sql, Project.class);
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         query.setParameter(1, sdf.format(new Date()));
-        query.setFirstResult(page_index-1);
-        query.setMaxResults( page_index+page_size-1);
+        query.setFirstResult(page_size*(page_index-1));
+        query.setMaxResults(page_size);
         return query.getResultList();
     }
 
