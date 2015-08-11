@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -88,11 +89,13 @@ public class WangDaiTianYanController {
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/loans")
     public String loans(@RequestParam("token") String token,
-                        @RequestParam("status") Integer status,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
+                        @RequestParam(value = "status",defaultValue ="2" ) Integer status,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
                         @RequestParam("time_from") String time_from,//状态为1 是对应平台满标字段的值检索  状态为0就以平台发标时间字段检索
                         @RequestParam("time_to") String time_to,// 状态为1 是对应平台满标字段的值检索 状态为0 就以平台发标时间字段检索
                         @RequestParam("page_size") Integer page_size,//(不做分页总页为1,分页从1 开始向上取整,不要给小数)
-                        @RequestParam("page_index") Integer page_index) {
+                        @RequestParam("page_index") Integer page_index,
+                        HttpServletRequest request) {
+
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token)) {
