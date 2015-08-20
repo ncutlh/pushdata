@@ -37,6 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<Project> findByIds(String ids){
+        String sql = "select c from Project c where c.id in ("+ids+")";
+        TypedQuery query = em.createQuery(sql, Project.class);
+        return query.getResultList();
+    }
+
+    @Override
     public List<Project> getProjectList(String date, String page, String pageSize) throws ParseException {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         TypedQuery query = em.createQuery("select c from Project c where c.dealdate between ?1 and ?2 and projectstatus in ('FINISHED','SETTLED','CLEARED','ARCHIVED')", Project.class);
@@ -145,4 +152,18 @@ public class ProjectServiceImpl implements ProjectService {
         query.setParameter(1, DateUtils.getDateLong(new Date()));
         return (Long)query.getSingleResult();
     }
+
+
+    @Override
+    public List<Project> getXigualicaiProjectList(){
+        String sql="select c from Project c , ProjectChannel p " +
+                " where c.id = p.projectid and ispushed=0 and channelid=9"+
+                " and projectstatus in ('SCHEDULED','OPENED') " +
+                " and allowinvestat <=?1";
+        TypedQuery query = em.createQuery(sql, Project.class);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        query.setParameter(1, sdf.format(new Date()));
+        return query.getResultList();
+    }
+
 }

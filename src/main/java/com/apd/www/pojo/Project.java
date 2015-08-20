@@ -168,22 +168,6 @@ public class Project {
 
     private boolean ispushtojinpingmei;
 
-    public Integer getFinancingmaturityday() {
-        return financingmaturityday;
-    }
-
-    public void setFinancingmaturityday(Integer financingmaturityday) {
-        this.financingmaturityday = financingmaturityday;
-    }
-
-    public String getProjectstatus() {
-        return projectstatus;
-    }
-
-    public void setProjectstatus(String projectstatus) {
-        this.projectstatus = projectstatus;
-    }
-
     /**
      * 区域
      */
@@ -196,13 +180,6 @@ public class Project {
 
     private String projectcategory;
 
-    public String getProjectcategory() {
-        return projectcategory;
-    }
-
-    public void setProjectcategory(String projectcategory) {
-        this.projectcategory = projectcategory;
-    }
 
     /**
      * 项目情况
@@ -220,6 +197,35 @@ public class Project {
     private Date dealdate;
 
     private Date createat;
+
+
+    public Integer getFinancingmaturityday() {
+        return financingmaturityday;
+    }
+
+    public void setFinancingmaturityday(Integer financingmaturityday) {
+        this.financingmaturityday = financingmaturityday;
+    }
+
+    public String getProjectstatus() {
+        return projectstatus;
+    }
+
+    public void setProjectstatus(String projectstatus) {
+        this.projectstatus = projectstatus;
+    }
+
+
+
+    public String getProjectcategory() {
+        return projectcategory;
+    }
+
+    public void setProjectcategory(String projectcategory) {
+        this.projectcategory = projectcategory;
+    }
+
+
 
     public String getProjectname() {
         return projectname;

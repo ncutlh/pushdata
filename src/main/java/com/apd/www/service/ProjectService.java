@@ -10,7 +10,10 @@ import java.util.List;
  * Created by laintime on 15/4/23.
  */
 public interface ProjectService {
+
     Project findById(int i);
+
+    public List<Project> findByIds(String ids);
 
     List getProjectList(String date, String page, String pageSize) throws ParseException;
 
@@ -29,4 +32,6 @@ public interface ProjectService {
     public List<Project> getYong360ProjectList(Integer page_size,Integer page_index) throws ParseException;
 
     public Long getYong360ProjectListCount();
+
+    public List<Project> getXigualicaiProjectList();
 }
