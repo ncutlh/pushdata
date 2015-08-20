@@ -198,6 +198,15 @@ public class Project {
 
     private Date createat;
 
+    private Date updateat;
+
+    public Date getUpdateat() {
+        return updateat;
+    }
+
+    public void setUpdateat(Date updateat) {
+        this.updateat = updateat;
+    }
 
     public Integer getFinancingmaturityday() {
         return financingmaturityday;

@@ -90,20 +90,20 @@ public class XigualicaiController {
                 else
                     xigualicaiParams.setInterestPaymentType("其他");
 
-                xigualicaiParams.setGuaranteeInsitutions("无");
+                xigualicaiParams.setGuaranteeInsitutions("");
 
                 if ("SCHEDULED".equals(project.getProjectstatus())) {
                     xigualicaiParams.setOnlineState("准备");
                 } else if ("OPENED".equals(project.getProjectstatus())) {
                     xigualicaiParams.setOnlineState("在售");
                 } else if ("FINISHED".equals(project.getProjectstatus())) {
-                    xigualicaiParams.setOnlineState("已满标");
+                    xigualicaiParams.setOnlineState("审核中");
                 } else if ("SETTLED".equals(project.getProjectstatus())) {
-                    xigualicaiParams.setOnlineState("已结算");
+                    xigualicaiParams.setOnlineState("还款中");
                 } else if ("CLEARED".equals(project.getProjectstatus())) {
-                    xigualicaiParams.setOnlineState("已还清");
+                    xigualicaiParams.setOnlineState("还款完成");
                 } else if ("ARCHIVED".equals(project.getProjectstatus())) {
-                    xigualicaiParams.setOnlineState("已存档");
+                    xigualicaiParams.setOnlineState("还款完成");
                 } else {
                     xigualicaiParams.setOnlineState("已取消");
                 }
@@ -114,7 +114,7 @@ public class XigualicaiController {
                 if (project.getDealdate() != null)
                     xigualicaiParams.setEstablishmentDate(DateUtils.getDateLong(project.getDealdate()));
                 else
-                    xigualicaiParams.setEstablishmentDate("0");
+                    xigualicaiParams.setEstablishmentDate("");
                 xigualicaiParams.setExpireDate(DateUtils.getDateLong(project.getBiddeadline()));
                 xigualicaiParams.setRewardRate(0.0);
 
@@ -155,24 +155,31 @@ public class XigualicaiController {
                     xigualicaiProjectParams.setProductCode(String.valueOf(project.getId()));
                     if ("SCHEDULED".equals(project.getProjectstatus())) {
                         xigualicaiProjectParams.setOnlineState("准备");
+                        xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getExpectedonlinedate()));
                     } else if ("OPENED".equals(project.getProjectstatus())) {
                         xigualicaiProjectParams.setOnlineState("在售");
+                        xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getAllowinvestat()));
                     } else if ("FINISHED".equals(project.getProjectstatus())) {
-                        xigualicaiProjectParams.setOnlineState("已满标");
+                        xigualicaiProjectParams.setOnlineState("审核中");
+                        xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getBidcompletedtime()));
                     } else if ("SETTLED".equals(project.getProjectstatus())) {
-                        xigualicaiProjectParams.setOnlineState("已结算");
+                        xigualicaiProjectParams.setOnlineState("还款中");
+                        xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getDealdate()));
                     } else if ("CLEARED".equals(project.getProjectstatus())) {
-                        xigualicaiProjectParams.setOnlineState("已还清");
+                        xigualicaiProjectParams.setOnlineState("还款完成");
                     } else if ("ARCHIVED".equals(project.getProjectstatus())) {
-                        xigualicaiProjectParams.setOnlineState("已存档");
+                        xigualicaiProjectParams.setOnlineState("还款完成");
                     } else {
                         xigualicaiProjectParams.setOnlineState("已取消");
                     }
                     xigualicaiProjectParams.setScale(project.getProgressPercent().doubleValue());
+
                     if (project.getDealdate() != null)
                         xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getDealdate()));
                     else
-                        xigualicaiProjectParams.setStatusChangeDate("0");
+                        xigualicaiProjectParams.setStatusChangeDate(DateUtils.getDateLong(project.getAllowinvestat()));
+
+
                     List<Investment> investments = investService.getInvestList(project.getId());
                     if (investments != null && investments.size() > 0) {
                         xigualicaiProjectParams.setInvestTimes(investments.size());
