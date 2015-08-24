@@ -114,8 +114,8 @@ public class XigualicaiController {
                 if (project.getDealdate() != null)
                     xigualicaiParams.setEstablishmentDate(DateUtils.getDateLong(project.getDealdate()));
                 else
-                    xigualicaiParams.setEstablishmentDate("");
-                xigualicaiParams.setExpireDate(DateUtils.getDateLong(project.getBiddeadline()));
+                    xigualicaiParams.setEstablishmentDate(DateUtils.getDateLong(project.getBiddeadline()));
+                xigualicaiParams.setExpireDate("");
                 xigualicaiParams.setRewardRate(0.0);
 
                 List<Investment> investments = investService.getInvestList(project.getId());
