@@ -31,8 +31,6 @@ public class XigualicaiController {
     @Autowired
     private InvestService investService;
 
-    @Autowired
-    private UserSerivce userSerivce;
 
     /**
      * 借款列表数据；
@@ -124,7 +122,7 @@ public class XigualicaiController {
                 } else {
                     xigualicaiParams.setInvestTimes(0);
                 }
-                xigualicaiParams.setProductURL("http://www.apengdai.com/project/info/" + project.getId() + "?from=xglc");
+                xigualicaiParams.setProductURL("http://m.apengdai.com/project/info/" + project.getId() + "?from=xglc");
 
                 xigualicaiParamsList.add(xigualicaiParams);
             }
@@ -186,7 +184,7 @@ public class XigualicaiController {
                     } else {
                         xigualicaiProjectParams.setInvestTimes(0);
                     }
-                    xigualicaiProjectParams.setProductURL("http://www.apengdai.com/project/info/" + project.getId() + "?from=xglc");
+                    xigualicaiProjectParams.setProductURL("http://m.apengdai.com/project/info/" + project.getId() + "?from=xglc");
 
                     xigualicaiParamsList.add(xigualicaiProjectParams);
                 }
