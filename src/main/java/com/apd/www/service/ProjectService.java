@@ -34,4 +34,8 @@ public interface ProjectService {
     public Long getYong360ProjectListCount();
 
     public List<Project> getXigualicaiProjectList();
+
+    public List<Project> getAllowinvestatProjectList();
+
+    public List<Project> getProjectListByTime(String startDate,String endDate) throws ParseException;
 }

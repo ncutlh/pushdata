@@ -10,10 +10,16 @@ import java.util.List;
 public interface InvestService {
     List getInvestList(int id);
 
-
     List<Investment> getLastMonthInvestList(String channel);
 
     List<Investment>  getInvestListByPage(int projectid,int page_size,int page_index);
 
     Long getInvestListCount(int projectid);
+
+    List<Investment> getInvestListByUid(int uid);
+
+    Integer getInvestCountByUid(int uid);
+
+    Investment getInvObject(int investid);
+
 }

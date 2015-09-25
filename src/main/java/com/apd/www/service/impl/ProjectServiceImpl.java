@@ -166,4 +166,27 @@ public class ProjectServiceImpl implements ProjectService {
         return query.getResultList();
     }
 
+
+    @Override
+    public List<Project> getAllowinvestatProjectList(){
+        String sql="select c from Project c " +
+                " where projectstatus in ('SCHEDULED','OPENED') " +
+                " and allowinvestat <=?1";
+        TypedQuery query = em.createQuery(sql, Project.class);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        query.setParameter(1, sdf.format(new Date()));
+        return query.getResultList();
+    }
+
+
+    @Override
+    public List<Project> getProjectListByTime(String startDate, String endDate) throws ParseException {
+        String sql="select c from Project c where c.id !=2809 and  c.id !=3040 and c.allowinvestat between ?1 and ?2";
+        TypedQuery query = em.createQuery(sql, Project.class);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        query.setParameter(1, sdf.parse(startDate));
+        query.setParameter(2, sdf.parse(endDate));
+
+        return query.getResultList();
+    }
 }
