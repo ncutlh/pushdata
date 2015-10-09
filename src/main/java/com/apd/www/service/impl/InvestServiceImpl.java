@@ -65,19 +65,18 @@ public class InvestServiceImpl  implements InvestService{
 
 
     @Override
-    public List getInvestListByUid(int uid) {
+    public List getInvestListByUid(int uid,int n) {
         TypedQuery query = em.createQuery("select c from Investment c where investoruserid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ORDER BY createat desc", Investment.class);
         query.setParameter(1,uid);
+        query.setMaxResults(n);
         return query.getResultList();
     }
 
 
     @Override
-    public Integer getInvestCountByUid(int uid) {
-        TypedQuery query = em.createQuery("select  count(1) from Investment c where investoruserid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Integer.class);
-        query.setParameter(1,uid);
-
-        return (Integer)query.getSingleResult();
+    public Long getInvestCountByUid(int uid) {
+        TypedQuery query = em.createQuery("select  count(1) from Investment c where investoruserid= "+uid+" and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Long.class);
+        return (Long)query.getSingleResult();
     }
 
     @Override

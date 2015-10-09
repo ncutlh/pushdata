@@ -16,9 +16,9 @@ public interface InvestService {
 
     Long getInvestListCount(int projectid);
 
-    List<Investment> getInvestListByUid(int uid);
+    List<Investment> getInvestListByUid(int uid,int n);
 
-    Integer getInvestCountByUid(int uid);
+    Long getInvestCountByUid(int uid);
 
     Investment getInvObject(int investid);
 

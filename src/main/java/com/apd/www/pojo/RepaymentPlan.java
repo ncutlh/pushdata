@@ -1,17 +1,22 @@
 package com.apd.www.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by Liuhong on 2015/9/25.
  */
+@Entity
 public class RepaymentPlan {
-
-    private int repaymentplanid;
-    private int projectid;
-    private int investmentid;
-    private int projectrepaymentplanid;
+    @Id
+    @Column(name = "repaymentplanid")
+    private Integer repaymentplanid;
+    private Integer projectid;
+    private Integer investmentid;
+    private Integer projectrepaymentplanid;
     private BigDecimal amount = BigDecimal.ZERO;
     private BigDecimal interestamount = BigDecimal.ZERO;
     private BigDecimal principalamount = BigDecimal.ZERO;
@@ -54,7 +59,7 @@ public class RepaymentPlan {
 
     private String paychannel;
     //转账操作控制状态
-    private String payStatus;
+    private String paystatus;
 
     public int getRepaymentplanid() {
         return repaymentplanid;
@@ -232,11 +237,27 @@ public class RepaymentPlan {
         this.paychannel = paychannel;
     }
 
-    public String getPayStatus() {
-        return payStatus;
+    public String getPaystatus() {
+        return paystatus;
     }
 
-    public void setPayStatus(String payStatus) {
-        this.payStatus = payStatus;
+    public void setPaystatus(String paystatus) {
+        this.paystatus = paystatus;
+    }
+
+    public void setRepaymentplanid(Integer repaymentplanid) {
+        this.repaymentplanid = repaymentplanid;
+    }
+
+    public void setProjectid(Integer projectid) {
+        this.projectid = projectid;
+    }
+
+    public void setInvestmentid(Integer investmentid) {
+        this.investmentid = investmentid;
+    }
+
+    public void setProjectrepaymentplanid(Integer projectrepaymentplanid) {
+        this.projectrepaymentplanid = projectrepaymentplanid;
     }
 }

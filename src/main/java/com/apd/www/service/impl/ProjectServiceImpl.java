@@ -171,10 +171,10 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> getAllowinvestatProjectList(){
         String sql="select c from Project c " +
                 " where projectstatus in ('SCHEDULED','OPENED') " +
-                " and allowinvestat <=?1";
+                " and allowinvestat <= ?1"+
+                " and biddeadline >= ?1";
         TypedQuery query = em.createQuery(sql, Project.class);
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        query.setParameter(1, sdf.format(new Date()));
+        query.setParameter(1, new Date());
         return query.getResultList();
     }
 

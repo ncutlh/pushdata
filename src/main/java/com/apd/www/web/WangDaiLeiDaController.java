@@ -21,11 +21,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -33,6 +36,7 @@ import java.util.*;
 /**
  * Created by Liuhong on 2015/9/25.
  */
+@Controller
 public class WangDaiLeiDaController {
 
     @Autowired
@@ -47,33 +51,39 @@ public class WangDaiLeiDaController {
     @Autowired
     private RepaymentPlanService repaymentPlanService;
 
-    private static String WDLD_LOCAL_PLAT_KEY="qwsdfgjf";
 
-    private static  String WDLD_KEY="Z5hrfsVq";
-    private static  String WDLD_LOCAL_KEY="WDFSadfs";
-    private static  String WDLD_PLAT_CODE="阿朋贷";
-
-    private UserMarket checkUid(String  wdldUserIDUnCryt){
+    private Integer checkUid(String  wdldUserIDUnCryt){
 
         try {
             String ext3 = WDLDDESUtils.decrypt(wdldUserIDUnCryt, WebConfig.getWdldKey());
-            String plantUserId= DesUtil.decrypt(ext3, WebConfig.getWdldLocalKey());
+            String userId = WDLDDESUtils.decrypt(ext3, WebConfig.getWdldLocalKey());
+            UserMarket userMarket = userSerivce.getUserMarketByUid(Integer.valueOf(userId));
 
-            UserMarket userMarket = userSerivce.getUserMarketByUid(Integer.valueOf(plantUserId));
-            if(userMarket!=null && "wdld".equals(userMarket.getChannel())){
-               return userMarket;
+            if(userMarket!=null  && "wdld".equals(userMarket.getExt5()))
+            {
+               return userMarket.getUserid();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return 0;
+    }
+
+    private String getResoult(String jsonString){
+        String resoult = "";
+        try {
+            resoult = WDLDDESUtils.encrypt(jsonString, WebConfig.getWdldKey());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  resoult;
     }
 
     private boolean checkLocalPlat(String  localPlatKey){
 
         try {
-            String delocalPlatKey= DesUtil.decrypt(localPlatKey, WebConfig.getWdldLocalKey());
-            if(WDLD_LOCAL_PLAT_KEY.equals(delocalPlatKey))
+            String delocalPlatKey= WDLDDESUtils.decrypt(localPlatKey, WebConfig.getWdldKey());
+            if(WebConfig.getWdldPlatCode().equals(delocalPlatKey))
                 return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,61 +94,69 @@ public class WangDaiLeiDaController {
     //获得投资记录
     @ResponseBody
     @RequestMapping(value = "/wdld/getInvList")
-    public String getInvList(@RequestParam(value = "userID",required = true) String  wdldUserIDUnCryt,
-                             @RequestParam(value = "n",required = true) int  n) {
-        UserMarket userMarket = checkUid(wdldUserIDUnCryt);
+    public String getInvList(HttpServletResponse response,
+                             @RequestParam(value = "userID",required = false) String  userID,
+                             @RequestParam(value = "n",required = false) int n) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
-
-        if(userMarket!=null){
-            List<Investment> invList = investService.getInvestListByUid(userMarket.getUserid());
-            if(invList!=null && invList.size()>0){
-                map.put("count",String.valueOf(invList.size()));
-                List<WangDaiLeiDaInvParams> wangDaiLeiDaInvList= new ArrayList<WangDaiLeiDaInvParams>();
-                for(Investment inv : invList){
-                    WangDaiLeiDaInvParams wangDaiLeiDaInvParams = new WangDaiLeiDaInvParams();
-                    wangDaiLeiDaInvParams.setBidID(String.valueOf(inv.getProjectid()));
-                    wangDaiLeiDaInvParams.setInvestDate(String.valueOf(inv.getCreateat()));
-                    wangDaiLeiDaInvParams.setInvestID(String.valueOf(inv.getInvestmentid()));
-                    wangDaiLeiDaInvParams.setInvestMoney(String.valueOf(inv.getAmount()));
-                    wangDaiLeiDaInvList.add(wangDaiLeiDaInvParams);
+        int uid =checkUid(userID);
+        if(uid!=0){
+                List<Investment> invList = investService.getInvestListByUid(uid, n);
+                if(invList!=null && invList.size()>0){
+                    map.put("count",String.valueOf(invList.size()));
+                    List<WangDaiLeiDaInvParams> wangDaiLeiDaInvList= new ArrayList<WangDaiLeiDaInvParams>();
+                    for(Investment inv : invList){
+                        WangDaiLeiDaInvParams wangDaiLeiDaInvParams = new WangDaiLeiDaInvParams();
+                        wangDaiLeiDaInvParams.setBidID(String.valueOf(inv.getProjectid()));
+                        wangDaiLeiDaInvParams.setInvestDate(String.valueOf(inv.getCreateat()));
+                        wangDaiLeiDaInvParams.setInvestID(String.valueOf(inv.getInvestmentid()));
+                        wangDaiLeiDaInvParams.setInvestMoney(String.valueOf(inv.getAmount()));
+                        wangDaiLeiDaInvList.add(wangDaiLeiDaInvParams);
+                    }
+                    map.put("dataList",wangDaiLeiDaInvList);
                 }
-                map.put("dataList",wangDaiLeiDaInvList);
             }
-        }
         return JSON.toJSONString(map);
+//        return getResoult(JSON.toJSONString(map));
     }
 
 
 
     //获得投资记录
     @ResponseBody
-    @RequestMapping(value = "/wdld/getInvCount")
-    public String getInvCount(@RequestParam(value = "userID",required = true) String  wdldUserIDUnCryt)
+    @RequestMapping(value = "/wdld/getInvCount",method = RequestMethod.POST)
+    public String getInvCount(HttpServletResponse response,@RequestParam(value = "userID",required = true) String  userID)
     {
-
-        UserMarket userMarket = checkUid(wdldUserIDUnCryt);
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,String> map = new HashMap<String, String>();
         map.put("count","0");
-
-        if(userMarket!=null)
-        {
-            int invCount = investService.getInvestCountByUid(userMarket.getUserid());
+        int uid =checkUid(userID);
+        if(uid!=0){
+            Long invCount = investService.getInvestCountByUid(uid);
             map.put("count",String.valueOf(invCount));
         }
-
-        return JSON.toJSONString(map);
+        return getResoult(JSON.toJSONString(map));
     }
 
     //获得回款计划
     @ResponseBody
     @RequestMapping(value = "/wdld/getReplayList")
-    public String getReplayList(@RequestParam(value = "investID",required = true)  String investID)
+    public String getReplayList(HttpServletResponse response,
+                                @RequestParam(value = "investID",required = true)  String investIDKey)
     {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
+
+        String investID = null;
+        try {
+            investID = WDLDDESUtils.decrypt(investIDKey, WebConfig.getWdldKey());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         List<RepaymentPlan> repaymentPlanList = repaymentPlanService.getListByInvId(Integer.valueOf(investID));
         List<Date> terms = ImmutableSet.copyOf(FluentIterable.from(repaymentPlanList).transform(new Function<RepaymentPlan, Date>() {
             @Override
@@ -177,13 +195,14 @@ public class WangDaiLeiDaController {
             map.put("count",String.valueOf(repaymentPlanList.size()));
             map.put("dataList",replamentParamsList);
         }
-        return JSON.toJSONString(map);
+        return getResoult(JSON.toJSONString(map));
     }
 
     //获得标的信息
     @ResponseBody
     @RequestMapping(value = "/wdld/getProList")
-    public String getProList(@RequestParam(value = "key",required = true) String  key) {
+    public String getProList(HttpServletResponse response,@RequestParam(value = "key",required = true) String  key) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
@@ -192,39 +211,43 @@ public class WangDaiLeiDaController {
             return JSON.toJSONString(map);
 
         List<Project> projectList = projectService.getAllowinvestatProjectList();
-        getProjectList(projectList,map);
+        List<WangDaiLeiDaProParams> proList = getProjectList(projectList,map);
 
-        map.put("count", "0");
-        map.put("dataList","");
-        return JSON.toJSONString(map);
+        map.put("count", proList.size());
+        map.put("dataList",proList);
+        return getResoult(JSON.toJSONString(map));
     }
 
 
     //获得历史标信息
 
     /**
-     * yyyMMdd
-     * @param dateTime
+     *
+     * @param response
+     * @param dateTimeKey
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/wdld/getHisProList")
-    public String getHisProList(@RequestParam(value = "dateTime",required = true) String  dateTime) {
+    public String getHisProList(HttpServletResponse response,@RequestParam(value = "dateTime",required = true) String  dateTimeKey) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
-        String str_date =dateTime.substring(0,4)+"-"+dateTime.substring(5,7)+"-"+dateTime.substring(8,9)+" 00:00:00";
-        String end_date =dateTime.substring(0,4)+"-"+dateTime.substring(5,7)+"-"+dateTime.substring(8,9)+" 23:59:59";
-
         try {
+           String  dateTime = WDLDDESUtils.decrypt(dateTimeKey,WebConfig.getWdldKey());
+           String str_date =dateTime.substring(0,4)+"-"+dateTime.substring(4,6)+"-"+dateTime.substring(6,8)+" 00:00:00";
+           String end_date =dateTime.substring(0,4)+"-"+dateTime.substring(4,6)+"-"+dateTime.substring(6,8)+" 23:59:59";
             List<Project> projectList  = projectService.getProjectListByTime(str_date,end_date);
-            map.put("count",projectList.size());
-            map.put("dataList",getProjectList(projectList,map));
-        } catch (ParseException e) {
+            if(projectList!=null && projectList.size()>0) {
+                map.put("count", projectList.size());
+                map.put("dataList", getProjectList(projectList, map));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return JSON.toJSONString(map);
+        return getResoult(JSON.toJSONString(map));
     }
 
     /**
@@ -234,9 +257,10 @@ public class WangDaiLeiDaController {
      */
     @ResponseBody
     @RequestMapping(value = "/wdld/getProInfo")
-    public String getProInfo(@RequestParam(value = "id",required = true) int id) {
+    public String getProInfo(HttpServletResponse response,@RequestParam(value = "id",required = true) int id) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         Project project = projectService.findById(id);
-        return JSON.toJSONString(getProject(project));
+        return getResoult(JSON.toJSONString(getProject(project)));
     }
 
 
@@ -279,7 +303,7 @@ public class WangDaiLeiDaController {
         proParams.setProcess(String.valueOf(p.getProgressPercent()));
 
         if (p.getIsrealborrower()) {
-            proParams.setOwner(Math.abs(p.getRealborrowername().hashCode()) + "");
+            proParams.setOwner(StringUtils.isEmpty(p.getRealborrowername())?"":Math.abs(p.getRealborrowername().hashCode()) + "");
         } else {
             proParams.setOwner(Math.abs(!StringUtils.isEmpty(p.getRealborroweridcard()) ? p.getRealborroweridcard().hashCode() : 0) + "");
         }
