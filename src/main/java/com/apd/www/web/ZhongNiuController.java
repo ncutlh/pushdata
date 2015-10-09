@@ -7,6 +7,7 @@ import com.apd.www.dao.UserRepository;
 import com.apd.www.pojo.*;
 import com.apd.www.service.InvestService;
 import com.apd.www.service.ProjectService;
+import com.apd.www.utils.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,19 +51,20 @@ public class ZhongNiuController {
 //            status	Int	是	项目状态（0：预投标，1：投标中，2：投标结束）
 //            amounted	Long	是	已募资金额，单位元
 //            progress	Float	是	进度（单位：%）如：进度为17%，则progress值为17
-
-            Map<String, Object> listObject = new HashMap<String, Object>();
-            listObject.put("pid", String.valueOf(project.getId()));
-            listObject.put("amounted", project.getAmount());
-            listObject.put("progress", project.getProgressPercent().multiply(new BigDecimal(100)).floatValue());
-            if ("SCHEDULED".equals(project.getProjectstatus())) {
-                listObject.put("status", 0);
-            } else if ("OPENED".equals(project.getProjectstatus())) {
-                listObject.put("status", 1);
-            } else {
-                listObject.put("status", 2);
-            }
-            list.add(listObject);
+           if(!"CANCELED".equals(project.getProjectstatus())) {
+               Map<String, Object> listObject = new HashMap<String, Object>();
+               listObject.put("pid", String.valueOf(project.getId()));
+               listObject.put("amounted", project.getAmount());
+               listObject.put("progress", project.getProgressPercent().multiply(new BigDecimal(100)).floatValue());
+               if ("SCHEDULED".equals(project.getProjectstatus())) {
+                   listObject.put("status", 0);
+               } else if ("OPENED".equals(project.getProjectstatus())) {
+                   listObject.put("status", 1);
+               } else {
+                   listObject.put("status", 2);
+               }
+               list.add(listObject);
+           }
         }
         map.put("status",0);
         map.put("msg","");
@@ -77,7 +79,7 @@ public class ZhongNiuController {
         Map<String, Object> map = new HashMap<String, Object>();
 
         Project zhongniuProject = projectService.findById(projectId);
-        if (zhongniuProject == null ) {
+        if (zhongniuProject == null ||  "CANCELED".equals(zhongniuProject.getProjectstatus()) ) {
             map.put("status", 2);
             map.put("msg","未找到对应项目");
             return JSON.toJSONString(map);
@@ -91,7 +93,8 @@ public class ZhongNiuController {
         else
         zhongNiuParams.setType(1);
         zhongNiuParams.setYield(zhongniuProject.getInterestrate().multiply(new BigDecimal(100)).floatValue());//是	年化利率（单位：%），精确到小数点2位
-        zhongNiuParams.setDuration(zhongniuProject.getFinancingmaturityday().floatValue());//是	投资期限（单位：月），精确到小数点2位
+
+        zhongNiuParams.setDuration(zhongniuProject.getFinancingmaturity().floatValue());//是	投资期限（单位：月），精确到小数点2位
         //是	1 按月付息 到期还本 2 按季付息，到期还本3 每月等额本息  4 到期还本息 5 按周等额本息还款 6按周付息，到期还本 7 按天到期还款 8按季分期还款 9 其他
         if(zhongniuProject.getRepaymentcalctype().equals("OneInterestOnePrincipal"))
             zhongNiuParams.setRepaytype(4);
