@@ -85,7 +85,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> getZhongniuProjectList() throws ParseException {
-        String sql ="select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=6 and  projectstatus != 'INITIATED'" +
+        String sql ="select c from Project c , ProjectChannel p where c.id = p.projectid and ispushed=0 and channelid=6 and projectstatus in ('SCHEDULED','OPENED')" +
                 " and allowinvestat <=?1";
         TypedQuery query = em.createQuery(sql, Project.class);
         query.setParameter(1, DateUtils.getDateLong(new Date()));
