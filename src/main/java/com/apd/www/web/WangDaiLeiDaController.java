@@ -20,6 +20,7 @@ import com.apd.www.utils.WDLDDESUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import com.mysql.fabric.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -83,7 +84,7 @@ public class WangDaiLeiDaController {
 
         try {
             String delocalPlatKey= WDLDDESUtils.decrypt(localPlatKey, WebConfig.getWdldKey());
-            if(WebConfig.getWdldPlatCode().equals(delocalPlatKey))
+            if(WebConfig.getWdldKey().equals(delocalPlatKey))
                 return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,7 +203,6 @@ public class WangDaiLeiDaController {
     @ResponseBody
     @RequestMapping(value = "/wdld/getProList")
     public String getProList(HttpServletResponse response,@RequestParam(value = "key",required = true) String  key) {
-        response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
@@ -281,14 +281,14 @@ public class WangDaiLeiDaController {
         proParams.setBidInfoUrl("http://www.apengdai.com/project/info/" + p.getId() + "?from=wdld1");
         proParams.setType(p.getProjectcategory());
         proParams.setMoney(p.getAmount().toString());
-        proParams.setRate(p.getInterestrate().toString());
+        proParams.setRate(p.getInterestrate().multiply(new BigDecimal(100)).toString());
         proParams.setRateType("Y");
         proParams.setPrize("0.00");
         if (BigDecimal.ONE.compareTo(p.getFinancingmaturity()) > 0) {
             proParams.setLimitTime(String.valueOf(p.getFinancingmaturityday().intValue()));
             proParams.setLimitType("D");
         } else {
-            proParams.setLimitTime(String.valueOf(p.getFinancingmaturity()));
+            proParams.setLimitTime(String.valueOf(p.getFinancingmaturity().intValue()));
             proParams.setLimitType("M");
         }
         // 0 代表其他；1 按月等额本息还款,；2按月付息,到期还本, 3 按天计息，一次性还本付息；4，按月计息，一次性还本付息；5 按季分期还款，6 为等额本金，按月还本金附录有更详细解释）
@@ -300,7 +300,7 @@ public class WangDaiLeiDaController {
             proParams.setRepaymentType("A");
 
 
-        proParams.setProcess(String.valueOf(p.getProgressPercent()));
+        proParams.setProcess(String.valueOf(p.getProgressPercent().multiply(new BigDecimal(100))));
 
         if (p.getIsrealborrower()) {
             proParams.setOwner(StringUtils.isEmpty(p.getRealborrowername())?"":Math.abs(p.getRealborrowername().hashCode()) + "");
