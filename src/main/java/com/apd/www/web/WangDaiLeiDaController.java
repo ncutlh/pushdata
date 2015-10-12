@@ -208,7 +208,7 @@ public class WangDaiLeiDaController {
         map.put("dataList","");
 
         if(!checkLocalPlat(key))
-            return JSON.toJSONString(map);
+            return getResoult(JSON.toJSONString(map));
 
         List<Project> projectList = projectService.getAllowinvestatProjectList();
         List<WangDaiLeiDaProParams> proList = getProjectList(projectList,map);
