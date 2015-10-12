@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 public class DateUtils {
     static SimpleDateFormat sdfshot = new SimpleDateFormat("yyyy-MM-dd");
     static SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    static SimpleDateFormat sdfCompact = new SimpleDateFormat("yyyyMMddHHmmss");
     static SimpleDateFormat sdfLongMonthCn = new SimpleDateFormat("yyyy-MM");
 
     public static String getDateLong(Date date) {
@@ -25,6 +26,19 @@ public class DateUtils {
             return "";
         }
     }
+
+    public static String getDateCompact(Date date) {
+        String nowDate = "";
+        try {
+            if (date != null)
+                nowDate = sdfCompact.format(date);
+            return nowDate;
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
     public static Date getLastMonthFirstDay(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

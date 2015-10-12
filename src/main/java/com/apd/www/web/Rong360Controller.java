@@ -2,14 +2,9 @@ package com.apd.www.web;
 import com.alibaba.fastjson.JSON;
 import com.apd.www.pojo.Investment;
 import com.apd.www.pojo.Project;
-import com.apd.www.pojo.User;
 import com.apd.www.pojo.rong360.Rong360Params;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianYanInvParams;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianYanProjectParams;
-import com.apd.www.pojo.wangdaitianyan.WangDaiTianyanParams;
 import com.apd.www.service.InvestService;
 import com.apd.www.service.ProjectService;
-import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,28 +52,30 @@ public class Rong360Controller {
         Map<String,Object> rong360ParamsMap = new HashMap<String, Object>();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token,t)) {
-                rong360ParamsMap.put("status",100);
-                rong360ParamsMap.put("msg","token验证失败");
-                rong360ParamsMap.put("data",null);
-                return JSON.toJSONString(rong360ParamsMap);
+                return "{" +
+                        "\"data\": null," +
+                        "\"msg\": \"token验证失败\",\n" +
+                        "\"status\": 100\n" +
+                        "}";
             }
 
             if (page == null || count==null) {
-                rong360ParamsMap.put("status",100);
-                rong360ParamsMap.put("msg","page或count为空");
-                rong360ParamsMap.put("data",null);
-                return JSON.toJSONString(rong360ParamsMap);
+                return "{" +
+                        "\"data\": null," +
+                        "\"msg\": \"page或count为空\",\n" +
+                        "\"status\": 100\n" +
+                        "}";
             }
 
             List<Project> rong360ProjectList = projectService.getYong360ProjectList(count,page);
             Long countProjects = projectService.getYong360ProjectListCount();
 
             if (countProjects <= 0) {
-              rong360ParamsMap.put("version",2);
-              rong360ParamsMap.put("status",0);
-              rong360ParamsMap.put("msg","");
-              rong360ParamsMap.put("data",null);
-              return JSON.toJSONString(rong360ParamsMap);
+                return "{" +
+                        "\"data\": null," +
+                        "\"msg\": \"没有符合条件的数据\",\n" +
+                        "\"status\": 100\n" +
+                        "}";
             }
 
             rong360ParamsMap.put("version",2);
@@ -95,10 +92,11 @@ public class Rong360Controller {
             rong360ParamsMap.put("data", listMap);
 
         } catch (Exception e) {
-            rong360ParamsMap.put("status",100);
-            rong360ParamsMap.put("msg",e.getMessage());
-            rong360ParamsMap.put("data",null);
-            return JSON.toJSONString(rong360ParamsMap);
+            return "{" +
+                    "\"data\": null," +
+                    "\"msg\": \"访问异常--"+e.getMessage()+"\",\n" +
+                    "\"status\": 100\n" +
+                    "}";
         }
 
         return JSON.toJSONString(rong360ParamsMap);
@@ -115,18 +113,21 @@ public class Rong360Controller {
         Map<String,Object> rong360ParamsMap = new HashMap<String, Object>();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token,t)) {
-                rong360ParamsMap.put("status",100);
-                rong360ParamsMap.put("msg","token验证失败");
-                rong360ParamsMap.put("data",null);
-                return JSON.toJSONString(rong360ParamsMap);
+                return "{" +
+                        "\"data\": null," +
+                        "\"msg\": \"token验证失败\",\n" +
+                        "\"status\": 100\n" +
+                        "}";
             }
+
            Project project = projectService.findById(product_id);
 
             if (project ==null) {
-                rong360ParamsMap.put("status", 100);
-                rong360ParamsMap.put("msg", "");
-                rong360ParamsMap.put("data", null);
-                return JSON.toJSONString(rong360ParamsMap);
+                return "{" +
+                        "\"data\": null," +
+                        "\"msg\": \"没有对应的标的项目\",\n" +
+                        "\"status\": 100\n" +
+                        "}";
             }
 
             rong360ParamsMap.put("version",2);
@@ -135,10 +136,12 @@ public class Rong360Controller {
 
             rong360ParamsMap.put("data", getparams(project));
         } catch (Exception e) {
-            rong360ParamsMap.put("status",100);
-            rong360ParamsMap.put("msg", e.getMessage());
-            rong360ParamsMap.put("data", null);
-            return JSON.toJSONString(rong360ParamsMap);
+            return "{" +
+                    "\"data\": null," +
+                    "\"msg\": \"访问异常--"+e.getMessage()+"\",\n" +
+                    "\"status\": 100\n" +
+                    "}";
+
         }
 
         return JSON.toJSONString(rong360ParamsMap);

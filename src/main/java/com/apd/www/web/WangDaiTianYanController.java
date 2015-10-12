@@ -11,17 +11,17 @@ import com.apd.www.service.ProjectService;
 import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Liuhong on 2015/8/4.
@@ -41,7 +41,7 @@ public class WangDaiTianYanController {
     static String localUserName = "wangdaitianyan";
     static String localPassword = "735709";
     static String token_key = "sfdsgdskgdksjgdh";
-    static String token = "";
+    static String token = null;
 
 
     //校验AuthToken
@@ -58,12 +58,19 @@ public class WangDaiTianYanController {
     //Token 请求
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/token")
-    private static String token(@RequestParam("userName") String userName,@RequestParam("password") String password) throws Exception {
-       if(userName.equals(localUserName) && password.equals(localPassword)) {
-           String content = userName + password + token_key;
+    private static String token(@RequestParam("username") String username,@RequestParam("password") String password) throws Exception {
+       int result=-1;
+        if(username.equals(localUserName) && password.equals(localPassword)) {
+           String content = username + password + token_key;
            token = DigestUtils.md5Hex(content.getBytes("utf-8"));
+            result=1;
        }
-           return token;
+        Map<String,Object> reMap = new HashMap<String,Object>();
+        reMap.put("result",result);
+        Map<String,Object> re2Map = new HashMap<String,Object>();
+        re2Map.put("token",token);
+        reMap.put("data",re2Map);
+        return JSON.toJSONString(reMap);
     }
 
 
@@ -82,21 +89,23 @@ public class WangDaiTianYanController {
     @ResponseBody
     @RequestMapping(value = "/wangdaitianyan/loans")
     public String loans(@RequestParam("token") String token,
-                        @RequestParam("status") Integer status,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
+                        @RequestParam(value = "status",defaultValue ="2" ) Integer status,//0、正在投标中的借款标;1、已完成-包括还款中和已完成的借款标,为空所有状态
                         @RequestParam("time_from") String time_from,//状态为1 是对应平台满标字段的值检索  状态为0就以平台发标时间字段检索
                         @RequestParam("time_to") String time_to,// 状态为1 是对应平台满标字段的值检索 状态为0 就以平台发标时间字段检索
                         @RequestParam("page_size") Integer page_size,//(不做分页总页为1,分页从1 开始向上取整,不要给小数)
-                        @RequestParam("page_index") Integer page_index) {
+                        @RequestParam("page_index") Integer page_index,
+                        HttpServletRequest request) {
+
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token)) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("未授权的访问!");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
             if (page_size == null) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("page_size is null");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
@@ -105,18 +114,18 @@ public class WangDaiTianYanController {
             Long countProjects = projectService.getWDTYProjectListCount(status, time_from, time_to);
 
             if (countProjects <= 0) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("没有标");
-                wangDaiTianyanParams.setPage_count(0);
-                wangDaiTianyanParams.setPage_index(page_index);
+                wangDaiTianyanParams.setPage_count("0");
+                wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
                 wangDaiTianyanParams.setLoans(null);
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
-            wangDaiTianyanParams.setResult_code(1);
-            wangDaiTianyanParams.setResult_msg("");
-            wangDaiTianyanParams.setPage_count((int) Math.ceil((double) countProjects / page_size));
-            wangDaiTianyanParams.setPage_index(page_index);
+            wangDaiTianyanParams.setResult_code("1");
+            wangDaiTianyanParams.setResult_msg("获取数据成功");
+            wangDaiTianyanParams.setPage_count(String.valueOf((int) Math.ceil((double) countProjects / page_size)));
+            wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
             List<WangDaiTianYanProjectParams> loans = new ArrayList<WangDaiTianYanProjectParams>();
             for (Project project : wdtyProjectList) {
                 WangDaiTianYanProjectParams wDTYProjectParams = new WangDaiTianYanProjectParams();
@@ -131,7 +140,15 @@ public class WangDaiTianYanController {
                 } else {
                     wDTYProjectParams.setStatus(1);
                 }
-                wDTYProjectParams.setUserid(project.getBorroweruserid());
+
+                if(project.getIsrealborrower()){
+                    wDTYProjectParams.setUserid(Math.abs(project.getRealborrowername().hashCode()));
+                } else {
+                    wDTYProjectParams.setUserid(Math.abs(StringUtils.isNotEmpty(project.getRealborroweridcard()) ? project.getRealborroweridcard().hashCode():0));
+                }
+
+
+
                 // 0 代表信用标，1 担保标，2 抵押标，3秒标，4 债权转让标（流转标，二级市场标的），5 理财计划（宝类业务），6 其它
                 if ("PersonalCredit".equals(project.getProjectcategory())) {//"信易融"
                     wDTYProjectParams.setC_type(0);
@@ -156,16 +173,23 @@ public class WangDaiTianYanController {
                 else if ("MonthlyInterestOnePrincipal".equals(project.getRepaymentcalctype()))
                     wDTYProjectParams.setPay_way(2);
                 else if ("EqualPrincipalAndInterest".equals(project.getRepaymentcalctype()))
-                    wDTYProjectParams.setProcess(project.getProgressPercent());
+                    wDTYProjectParams.setPay_way(1);
+                else
+                     wDTYProjectParams.setPay_way(0);
+
+                wDTYProjectParams.setProcess(project.getProgressPercent());
                 wDTYProjectParams.setReward(BigDecimal.ZERO);
                 wDTYProjectParams.setGuarantee(BigDecimal.ZERO);
                 wDTYProjectParams.setStart_time(DateUtils.getDateLong(project.getAllowinvestat()));// "2014-03-13 14:44:26",标的创建时间(不为空)
-                wDTYProjectParams.setEnd_time(DateUtils.getDateLong(project.getBiddeadline()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+
                 List<Investment> investments = investService.getInvestList(project.getId());
-                if (investments != null && investments.size() > 0)
+                if (investments != null && investments.size() > 0) {
                     wDTYProjectParams.setInvest_num(investments.size());// “5”,投资次数(尽量不为空)
-                else
+                    wDTYProjectParams.setEnd_time(DateUtils.getDateLong(investments.get(investments.size()-1).getCreateat()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+                }else {
                     wDTYProjectParams.setInvest_num(0);
+                    wDTYProjectParams.setEnd_time(DateUtils.getDateLong(project.getAllowinvestat()));// "2014-03-13 16:44:26" ,结束时间(不为空，是满标时间)
+                }
                 wDTYProjectParams.setC_reward(BigDecimal.ZERO);
 
                 loans.add(wDTYProjectParams);
@@ -173,7 +197,7 @@ public class WangDaiTianYanController {
             wangDaiTianyanParams.setLoans(loans);
         } catch (Exception e) {
 
-            wangDaiTianyanParams.setResult_code(0);
+            wangDaiTianyanParams.setResult_code("0");
             wangDaiTianyanParams.setResult_msg(e.getMessage());
             return JSON.toJSONString(wangDaiTianyanParams);
         }
@@ -204,13 +228,13 @@ public class WangDaiTianYanController {
         WangDaiTianyanParams wangDaiTianyanParams = new WangDaiTianyanParams();
         try {
             if (token == null || "".equals(token) || !checkAuthToken(token)) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("未授权的访问!");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
 
             if (page_size == null) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("page_size is null");
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
@@ -218,13 +242,19 @@ public class WangDaiTianYanController {
             Long countInvestments = investService.getInvestListCount(id);
 
             if (countInvestments <= 0) {
-                wangDaiTianyanParams.setResult_code(-1);
+                wangDaiTianyanParams.setResult_code("-1");
                 wangDaiTianyanParams.setResult_msg("没有标");
-                wangDaiTianyanParams.setPage_count(0);
-                wangDaiTianyanParams.setPage_index(page_index);
+                wangDaiTianyanParams.setPage_count("0");
+                wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
                 wangDaiTianyanParams.setLoans(null);
                 return JSON.toJSONString(wangDaiTianyanParams);
             }
+
+            wangDaiTianyanParams.setResult_code("1");
+            wangDaiTianyanParams.setResult_msg("获取数据成功");
+            wangDaiTianyanParams.setPage_count(String.valueOf((int) Math.ceil((double) countInvestments / page_size)));
+            wangDaiTianyanParams.setPage_index(String.valueOf(page_index));
+
             List<WangDaiTianYanInvParams> loans = new ArrayList<WangDaiTianYanInvParams>();
             for(Investment investment:investments){
                 WangDaiTianYanInvParams wangDaiTianYanInvParams = new WangDaiTianYanInvParams();
@@ -245,7 +275,7 @@ public class WangDaiTianYanController {
 
         } catch (Exception e) {
 
-            wangDaiTianyanParams.setResult_code(0);
+            wangDaiTianyanParams.setResult_code("0");
             wangDaiTianyanParams.setResult_msg(e.getMessage());
             return JSON.toJSONString(wangDaiTianyanParams);
         }

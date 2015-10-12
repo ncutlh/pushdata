@@ -23,7 +23,7 @@ public class InvestServiceImpl  implements InvestService{
     @Override
     public List getInvestList(int id) {
 
-        TypedQuery query = em.createQuery("select c from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ORDER BY createAt desc", Investment.class);
+        TypedQuery query = em.createQuery("select c from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ORDER BY createat desc", Investment.class);
         query.setParameter(1,id);
 
         return query.getResultList();
@@ -61,6 +61,28 @@ public class InvestServiceImpl  implements InvestService{
         TypedQuery query = em.createQuery("select count(1) from Investment c where projectid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Long.class);
         query.setParameter(1,projectid);
         return (Long)query.getSingleResult();
+    }
 
+
+    @Override
+    public List getInvestListByUid(int uid,int n) {
+        TypedQuery query = em.createQuery("select c from Investment c where investoruserid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished') ORDER BY createat desc", Investment.class);
+        query.setParameter(1,uid);
+        query.setMaxResults(n);
+        return query.getResultList();
+    }
+
+
+    @Override
+    public Long getInvestCountByUid(int uid) {
+        TypedQuery query = em.createQuery("select  count(1) from Investment c where investoruserid= "+uid+" and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Long.class);
+        return (Long)query.getSingleResult();
+    }
+
+    @Override
+    public Investment getInvObject(int investid) {
+        TypedQuery query = em.createQuery("select c from Investment c where investmentid= ?1 and status in ('Subscribe','LoanRequest','LoanConfirm','Finished')", Investment.class);
+        query.setParameter(1,investid);
+        return (Investment)query.getSingleResult();
     }
 }
