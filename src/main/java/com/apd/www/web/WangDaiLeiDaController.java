@@ -235,7 +235,7 @@ public class WangDaiLeiDaController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/wdld/getHisProList")
+    @RequestMapping(value = "/wdld/getHisProList",method = RequestMethod.POST)
     public String getHisProList(HttpServletResponse response,@RequestParam(value = "dateTime",required = true) String  dateTimeKey) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
