@@ -148,7 +148,7 @@ public class WangDaiLeiDaController {
 
     //获得回款计划
     @ResponseBody
-    @RequestMapping(value = "/wdld/getReplayList")
+    @RequestMapping(value = "/wdld/getReplayList",method = RequestMethod.POST)
     public String getReplayList(HttpServletResponse response,
                                 @RequestParam(value = "investID",required = true)  String investIDKey)
     {
@@ -186,19 +186,21 @@ public class WangDaiLeiDaController {
                     wangDaiLeiDaReplamentParams.setInterest(String.valueOf(repaymentPlan.getInterestamount()));
                     wangDaiLeiDaReplamentParams.setManageFee("0.00");
                     wangDaiLeiDaReplamentParams.setStauts("Paied".equals(repaymentPlan.getStatus())?"1":"0");
+                    dateListMap.put(repaymentPlan.getPlanpayat(),wangDaiLeiDaReplamentParams);
                 }else{
                     WangDaiLeiDaReplamentParams wangDaiLeiDaReplamentParams = dateListMap.get(repaymentPlan.getPlanpayat());
                     wangDaiLeiDaReplamentParams.setRefundID(wangDaiLeiDaReplamentParams.getRefundID()+","+repaymentPlan.getRepaymentplanid());
                     wangDaiLeiDaReplamentParams.setPrincipal(String.valueOf(new BigDecimal(wangDaiLeiDaReplamentParams.getPrincipal()).add(repaymentPlan.getPrincipalamount())));
                     wangDaiLeiDaReplamentParams.setInterest(String.valueOf(new BigDecimal(wangDaiLeiDaReplamentParams.getInterest()).add(repaymentPlan.getInterestamount())));
                 }
+
             }
 
             List<WangDaiLeiDaReplamentParams> replamentParamsList = new ArrayList<WangDaiLeiDaReplamentParams>();
             for(Date term:terms){
                 replamentParamsList.add(dateListMap.get(term));
             }
-            map.put("count",String.valueOf(repaymentPlanList.size()));
+            map.put("count",String.valueOf(terms.size()));
             map.put("dataList",replamentParamsList);
         }
         return getResoult(JSON.toJSONString(map));
