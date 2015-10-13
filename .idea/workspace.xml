@@ -814,7 +814,7 @@
       <workItem from="1444372791142" duration="2322000" />
       <workItem from="1444375415752" duration="430000" />
       <workItem from="1444376865489" duration="10185000" />
-      <workItem from="1444465446313" duration="22316000" />
+      <workItem from="1444465446313" duration="22819000" />
     </task>
     <task id="LOCAL-00001" summary="金评梅">
       <created>1435048098286</created>
@@ -1004,11 +1004,15 @@
       <created>1444718374472</created>
       <updated>1444718374472</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="网贷雷达">
+      <created>1444727619815</created>
+      <updated>1444727619815</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="241640000" />
+    <option name="totallyTimeSpent" value="242143000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
