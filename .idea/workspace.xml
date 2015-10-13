@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="06e19e79-c29f-4881-b0f3-f0a1c87bffaf" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/apd/www/web/WangDaiLeiDaController.java" afterPath="$PROJECT_DIR$/src/main/java/com/apd/www/web/WangDaiLeiDaController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java" afterPath="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="pushdata.iws" />
@@ -39,8 +40,8 @@
       <file leaf-file-name="WangDaiLeiDaController.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/apd/www/web/WangDaiLeiDaController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334" vertical-offset="3150" max-vertical-offset="8640">
-              <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.5208333" vertical-offset="2259" max-vertical-offset="8640">
+              <caret line="124" column="3" selection-start-line="124" selection-start-column="3" selection-end-line="124" selection-end-column="3" />
               <folding>
                 <element signature="e#3406#3422#0" expanded="true" />
                 <element signature="e#3938#3961#0" expanded="true" />
@@ -52,6 +53,20 @@
                 <element signature="e#8808#8837#0" expanded="true" />
                 <element signature="e#9374#9390#0" expanded="true" />
                 <element signature="e#11939#11962#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WangDaiLeiDaReplamentParams.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1033" max-vertical-offset="1701">
+              <caret line="81" column="31" selection-start-line="81" selection-start-column="31" selection-end-line="81" selection-end-column="31" />
+              <folding>
+                <element signature="e#1735#1736#0" expanded="true" />
+                <element signature="e#1779#1780#0" expanded="true" />
+                <element signature="e#1815#1816#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -179,7 +194,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/Project.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/web/XigualicaiController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaProjectParams.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/service/RepaymentPlanService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/utils/DateUtils.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/service/ProjectService.java" />
@@ -199,6 +213,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/service/impl/ProjectServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaInvParams.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaProParams.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/apd/www/web/WangDaiLeiDaController.java" />
       </list>
     </option>
@@ -995,7 +1010,7 @@
       <workItem from="1444372791142" duration="2322000" />
       <workItem from="1444375415752" duration="430000" />
       <workItem from="1444376865489" duration="10185000" />
-      <workItem from="1444465446313" duration="16974000" />
+      <workItem from="1444465446313" duration="18062000" />
     </task>
     <task id="LOCAL-00001" summary="金评梅">
       <created>1435048098286</created>
@@ -1173,11 +1188,15 @@
       <created>1444707935950</created>
       <updated>1444707935950</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="网贷雷达">
+      <created>1444714469505</created>
+      <updated>1444714469505</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="236298000" />
+    <option name="totallyTimeSpent" value="237386000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1447,13 +1466,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="567">
           <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1647">
-          <caret line="5" column="40" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -1752,10 +1764,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/apd/www/pojo/wangdaileida/WangDaiLeiDaReplamentParams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1033" max-vertical-offset="1701">
+          <caret line="81" column="31" selection-start-line="81" selection-start-column="31" selection-end-line="81" selection-end-column="31" />
+          <folding>
+            <element signature="e#1735#1736#0" expanded="true" />
+            <element signature="e#1779#1780#0" expanded="true" />
+            <element signature="e#1815#1816#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/apd/www/web/WangDaiLeiDaController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="3150" max-vertical-offset="8640">
-          <caret line="154" column="0" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5208333" vertical-offset="2259" max-vertical-offset="8640">
+          <caret line="124" column="3" selection-start-line="124" selection-start-column="3" selection-end-line="124" selection-end-column="3" />
           <folding>
             <element signature="e#3406#3422#0" expanded="true" />
             <element signature="e#3938#3961#0" expanded="true" />

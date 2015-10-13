@@ -13,7 +13,7 @@ public class WangDaiLeiDaReplamentParams {
     private String principal;
     private String interest;
     private String manageFee;
-    private String stauts;
+    private String status;
 
     public String getRefundID() {
         return refundID;
@@ -79,11 +79,11 @@ public class WangDaiLeiDaReplamentParams {
         this.manageFee = manageFee;
     }
 
-    public String getStauts() {
-        return stauts;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStauts(String stauts) {
-        this.stauts = stauts;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

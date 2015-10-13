@@ -185,7 +185,7 @@ public class WangDaiLeiDaController {
                     wangDaiLeiDaReplamentParams.setPrincipal(String.valueOf(repaymentPlan.getPrincipalamount()));
                     wangDaiLeiDaReplamentParams.setInterest(String.valueOf(repaymentPlan.getInterestamount()));
                     wangDaiLeiDaReplamentParams.setManageFee("0.00");
-                    wangDaiLeiDaReplamentParams.setStauts("Paied".equals(repaymentPlan.getStatus())?"1":"0");
+                    wangDaiLeiDaReplamentParams.setStatus("Paied".equals(repaymentPlan.getStatus())?"1":"0");
                     dateListMap.put(repaymentPlan.getPlanpayat(),wangDaiLeiDaReplamentParams);
                 }else{
                     WangDaiLeiDaReplamentParams wangDaiLeiDaReplamentParams = dateListMap.get(repaymentPlan.getPlanpayat());
