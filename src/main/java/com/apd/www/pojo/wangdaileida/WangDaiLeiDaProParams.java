@@ -6,6 +6,7 @@ package com.apd.www.pojo.wangdaileida;
 public class WangDaiLeiDaProParams {
 
     private String id;
+    private String isValid;
     private String title;
     private String bidInfoUrl;
     private String type;
@@ -20,6 +21,23 @@ public class WangDaiLeiDaProParams {
     private String owner;
     private String platCode;
     private String startTime;
+    private String verifyTime;
+
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
+    }
+
+    public String getVerifyTime() {
+        return verifyTime;
+    }
+
+    public void setVerifyTime(String verifyTime) {
+        this.verifyTime = verifyTime;
+    }
 
     public String getId() {
         return id;

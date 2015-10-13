@@ -96,22 +96,24 @@ public class WangDaiLeiDaController {
     @ResponseBody
     @RequestMapping(value = "/wdld/getInvList")
     public String getInvList(HttpServletResponse response,
-                             @RequestParam(value = "userID",required = false) String  userID,
-                             @RequestParam(value = "n",required = false) int n) {
+                             @RequestParam(value = "userID",required = true) String  userID,
+                             @RequestParam(value = "n",required = true) String n) {
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
         map.put("dataList","");
         int uid =checkUid(userID);
+        try {
+            String nu = WDLDDESUtils.decrypt(n, WebConfig.getWdldKey());
         if(uid!=0){
-                List<Investment> invList = investService.getInvestListByUid(uid, n);
+                List<Investment> invList = investService.getInvestListByUid(uid,Integer.valueOf(nu));
                 if(invList!=null && invList.size()>0){
                     map.put("count",String.valueOf(invList.size()));
                     List<WangDaiLeiDaInvParams> wangDaiLeiDaInvList= new ArrayList<WangDaiLeiDaInvParams>();
                     for(Investment inv : invList){
                         WangDaiLeiDaInvParams wangDaiLeiDaInvParams = new WangDaiLeiDaInvParams();
                         wangDaiLeiDaInvParams.setBidID(String.valueOf(inv.getProjectid()));
-                        wangDaiLeiDaInvParams.setInvestDate(String.valueOf(inv.getCreateat()));
+                        wangDaiLeiDaInvParams.setInvestDate(DateUtils.getDateCompact(inv.getCreateat()));
                         wangDaiLeiDaInvParams.setInvestID(String.valueOf(inv.getInvestmentid()));
                         wangDaiLeiDaInvParams.setInvestMoney(String.valueOf(inv.getAmount()));
                         wangDaiLeiDaInvList.add(wangDaiLeiDaInvParams);
@@ -119,15 +121,18 @@ public class WangDaiLeiDaController {
                     map.put("dataList",wangDaiLeiDaInvList);
                 }
             }
-        return JSON.toJSONString(map);
-//        return getResoult(JSON.toJSONString(map));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        return JSON.toJSONString(map);
+        return getResoult(JSON.toJSONString(map));
     }
 
 
 
     //获得投资记录
     @ResponseBody
-    @RequestMapping(value = "/wdld/getInvCount",method = RequestMethod.POST)
+    @RequestMapping(value = "/wdld/getInvCount")
     public String getInvCount(HttpServletResponse response,@RequestParam(value = "userID",required = true) String  userID)
     {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -174,7 +179,7 @@ public class WangDaiLeiDaController {
                     WangDaiLeiDaReplamentParams wangDaiLeiDaReplamentParams = new WangDaiLeiDaReplamentParams();
                     wangDaiLeiDaReplamentParams.setRefundID(String.valueOf(repaymentPlan.getRepaymentplanid()));
                     wangDaiLeiDaReplamentParams.setInvestID(String.valueOf(repaymentPlan.getInvestmentid()));
-                    wangDaiLeiDaReplamentParams.setReturnDate(String.valueOf(repaymentPlan.getPlanpayat()));
+                    wangDaiLeiDaReplamentParams.setReturnDate(DateUtils.getDateCompact(repaymentPlan.getPlanpayat()));
                     wangDaiLeiDaReplamentParams.setCurrentTerm(String.valueOf(terms.indexOf(repaymentPlan.getPlanpayat())+1));
                     wangDaiLeiDaReplamentParams.setTotalTerm(String.valueOf(terms.size()));
                     wangDaiLeiDaReplamentParams.setPrincipal(String.valueOf(repaymentPlan.getPrincipalamount()));
@@ -257,9 +262,15 @@ public class WangDaiLeiDaController {
      */
     @ResponseBody
     @RequestMapping(value = "/wdld/getProInfo")
-    public String getProInfo(HttpServletResponse response,@RequestParam(value = "id",required = true) int id) {
+    public String getProInfo(HttpServletResponse response,@RequestParam(value = "id",required = true) String id) {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        Project project = projectService.findById(id);
+        Project project = null;
+        try {
+            String  idStr = WDLDDESUtils.decrypt(id,WebConfig.getWdldKey());
+            project = projectService.findById(Integer.valueOf(idStr));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return getResoult(JSON.toJSONString(getProject(project)));
     }
 
@@ -276,10 +287,27 @@ public class WangDaiLeiDaController {
     private  WangDaiLeiDaProParams getProject(Project p) {
 
         WangDaiLeiDaProParams proParams = new WangDaiLeiDaProParams();
+        if("CANCELED".equals(p.getProjectstatus())
+           ||"TEST".equals(p.getProjectstatus())
+           ||"OVERDUE".equals(p.getProjectstatus())
+            || "BREACH".equals(p.getProjectstatus())){
+            proParams.setIsValid("0");
+        }else{
+            proParams.setIsValid("1");
+        }
         proParams.setId(String.valueOf(p.getId()));
         proParams.setTitle(p.getProjectname());
         proParams.setBidInfoUrl("http://www.apengdai.com/project/info/" + p.getId() + "?from=wdld1");
-        proParams.setType(p.getProjectcategory());
+        if("PersonalCredit".equals(p.getProjectcategory())) {
+            proParams.setType("信易融");
+        }else if("CarMortgage".equals(p.getProjectcategory())){
+             proParams.setType("车易融");
+        }else if("DaySettle".equals(p.getProjectcategory())){
+            proParams.setType("日易盈");
+        }else if("Company".equals(p.getProjectcategory())){
+            proParams.setType ("企业融");
+        }
+
         proParams.setMoney(p.getAmount().toString());
         proParams.setRate(p.getInterestrate().multiply(new BigDecimal(100)).toString());
         proParams.setRateType("Y");
@@ -307,10 +335,9 @@ public class WangDaiLeiDaController {
         } else {
             proParams.setOwner(Math.abs(!StringUtils.isEmpty(p.getRealborroweridcard()) ? p.getRealborroweridcard().hashCode() : 0) + "");
         }
-
-
         proParams.setPlatCode(WebConfig.getWdldPlatCode());
         proParams.setStartTime(DateUtils.getDateCompact(p.getAllowinvestat()));
+        proParams.setVerifyTime(DateUtils.getDateCompact(p.getBidcompletedtime()));
         return proParams;
     }
 
