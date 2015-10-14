@@ -2,10 +2,7 @@ package com.apd.www.web;
 
 import com.alibaba.fastjson.JSON;
 import com.apd.www.config.WebConfig;
-import com.apd.www.pojo.Investment;
-import com.apd.www.pojo.Project;
-import com.apd.www.pojo.RepaymentPlan;
-import com.apd.www.pojo.UserMarket;
+import com.apd.www.pojo.*;
 
 import com.apd.www.pojo.wangdaileida.WangDaiLeiDaInvParams;
 import com.apd.www.pojo.wangdaileida.WangDaiLeiDaProParams;
@@ -15,12 +12,10 @@ import com.apd.www.service.ProjectService;
 import com.apd.www.service.RepaymentPlanService;
 import com.apd.www.service.UserSerivce;
 import com.apd.www.utils.DateUtils;
-import com.apd.www.utils.DesUtil;
 import com.apd.www.utils.WDLDDESUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-import com.mysql.fabric.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -31,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -296,6 +290,8 @@ public class WangDaiLeiDaController {
             proParams.setIsValid("0");
         }else{
             proParams.setIsValid("1");
+
+
         }
         proParams.setId(String.valueOf(p.getId()));
         proParams.setTitle(p.getProjectname());
@@ -337,6 +333,24 @@ public class WangDaiLeiDaController {
         } else {
             proParams.setOwner(Math.abs(!StringUtils.isEmpty(p.getRealborroweridcard()) ? p.getRealborroweridcard().hashCode() : 0) + "");
         }
+
+        proParams.setCurrentTerm("0");
+        proParams.setTotalTerm("0");
+        if("SETTLED".equals(p.getProjectstatus()) || "CLEARED".equals(p.getProjectstatus())){
+            List<ProjectRepaymentplan> projectRepaymentplanList = projectService.getProjectRepaymentPlan(p.getId());
+            if(projectRepaymentplanList.size()>0){
+                proParams.setTotalTerm(String.valueOf(projectRepaymentplanList.size()));
+                int current = 0;
+                for (ProjectRepaymentplan pr: projectRepaymentplanList){
+                    if(pr.getPlanpayat().getTime()-(new Date().getTime())<0)
+                        current++;
+                }
+                proParams.setCurrentTerm(String.valueOf(current));
+            }
+
+        }
+
+
         proParams.setPlatCode(WebConfig.getWdldPlatCode());
         proParams.setStartTime(DateUtils.getDateCompact(p.getAllowinvestat()));
         proParams.setVerifyTime(DateUtils.getDateCompact(p.getBidcompletedtime()));
