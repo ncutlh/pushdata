@@ -185,7 +185,7 @@ public class WangDaiLeiDaController {
                     wangDaiLeiDaReplamentParams.setPrincipal(String.valueOf(repaymentPlan.getPrincipalamount()));
                     wangDaiLeiDaReplamentParams.setInterest(String.valueOf(repaymentPlan.getInterestamount()));
                     wangDaiLeiDaReplamentParams.setManageFee("0.00");
-                    wangDaiLeiDaReplamentParams.setStatus("Paied".equals(repaymentPlan.getStatus())?"1":"0");
+                    wangDaiLeiDaReplamentParams.setStatus("Paied".equals(repaymentPlan.getStatus()) ? "1" : "0");
                     dateListMap.put(repaymentPlan.getPlanpayat(),wangDaiLeiDaReplamentParams);
                 }else{
                     WangDaiLeiDaReplamentParams wangDaiLeiDaReplamentParams = dateListMap.get(repaymentPlan.getPlanpayat());
@@ -240,7 +240,7 @@ public class WangDaiLeiDaController {
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count","0");
-        map.put("dataList","");
+        map.put("dataList",new ArrayList<String>());
         try {
            String  dateTime = WDLDDESUtils.decrypt(dateTimeKey,WebConfig.getWdldKey());
            String str_date =dateTime.substring(0,4)+"-"+dateTime.substring(4,6)+"-"+dateTime.substring(6,8)+" 00:00:00";
@@ -253,7 +253,7 @@ public class WangDaiLeiDaController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+//return JSON.toJSONString(map);
         return getResoult(JSON.toJSONString(map));
     }
 

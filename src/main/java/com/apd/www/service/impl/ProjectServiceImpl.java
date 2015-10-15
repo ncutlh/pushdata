@@ -172,7 +172,8 @@ public class ProjectServiceImpl implements ProjectService {
         String sql="select c from Project c " +
                 " where projectstatus in ('SCHEDULED','OPENED') " +
                 " and allowinvestat <= ?1"+
-                " and biddeadline >= ?1";
+                " and biddeadline >= ?1 " +
+                " and investmentedamount<amount";
         TypedQuery query = em.createQuery(sql, Project.class);
         query.setParameter(1, new Date());
         return query.getResultList();
