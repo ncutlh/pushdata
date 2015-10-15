@@ -22,6 +22,10 @@ public class WangDaiLeiDaProParams {
     private String platCode;
     private String startTime;
     private String verifyTime;
+    private String currentTerm;
+    private String totalTerm;
+
+
 
     public String getIsValid() {
         return isValid;
@@ -157,5 +161,22 @@ public class WangDaiLeiDaProParams {
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public String getCurrentTerm() {
+
+        return currentTerm;
+    }
+
+    public void setCurrentTerm(String currentTerm) {
+        this.currentTerm = currentTerm;
+    }
+
+    public String getTotalTerm() {
+        return totalTerm;
+    }
+
+    public void setTotalTerm(String totalTerm) {
+        this.totalTerm = totalTerm;
     }
 }

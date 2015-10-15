@@ -1,7 +1,7 @@
 package com.apd.www.service;
 
 import com.apd.www.pojo.Project;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.apd.www.pojo.ProjectRepaymentplan;
 
 import java.text.ParseException;
 import java.util.List;
@@ -38,4 +38,8 @@ public interface ProjectService {
     public List<Project> getAllowinvestatProjectList();
 
     public List<Project> getProjectListByTime(String startDate,String endDate) throws ParseException;
+
+    public List<ProjectRepaymentplan>  getProjectRepaymentPlan(int projectid);
+
+
 }

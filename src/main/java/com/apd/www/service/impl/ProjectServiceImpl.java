@@ -3,12 +3,12 @@ package com.apd.www.service.impl;
 import com.apd.www.dao.ProjectRepository;
 
 import com.apd.www.pojo.Project;
+import com.apd.www.pojo.ProjectRepaymentplan;
 import com.apd.www.service.ProjectService;
 import com.apd.www.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -189,5 +189,17 @@ public class ProjectServiceImpl implements ProjectService {
         query.setParameter(2, sdf.parse(endDate));
 
         return query.getResultList();
+
+
+
     }
+
+    @Override
+    public List<ProjectRepaymentplan> getProjectRepaymentPlan(int projectid) {
+        String sql = "select c from ProjectRepaymentplan c where c.projectid = "+projectid;
+        TypedQuery query = em.createQuery(sql, ProjectRepaymentplan.class);
+        return query.getResultList();
+    }
+
+
 }
